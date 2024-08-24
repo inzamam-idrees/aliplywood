@@ -65,7 +65,7 @@
 
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Model</label>
-                                    <input name="model" class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Enter Model">
+                                    <input name="model" class="form-control @error('model') is-invalid @enderror" type="text" placeholder="Enter Model">
                                     @error('model')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -75,8 +75,8 @@
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Category</label>
 
-                                    <select name="category_id" class="form-control">
-                                        <option>---Select Category---</option>
+                                    <select name="category_id" class="form-control @error('category_id') is-invalid @enderror">
+                                        <option value="">---Select Category---</option>
                                         @foreach($categories as $category)
                                             <option value="{{$category->id}}">{{$category->name}}</option>
                                         @endforeach
@@ -100,8 +100,8 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Unit</label>
-                                    <select name="unit_id" class="form-control">
-                                        <option>---Select Unit---</option>
+                                    <select name="unit_id" class="form-control @error('unit_id') is-invalid @enderror">
+                                        <option value="">---Select Unit---</option>
                                         @foreach($units as $unit)
                                             <option value="{{$unit->id}}">{{$unit->name}}</option>
                                         @endforeach
@@ -124,8 +124,8 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Tax </label>
-                                    <select name="tax_id" class="form-control">
-                                        <option>---Select Tax---</option>
+                                    <select name="tax_id" class="form-control @error('tax_id') is-invalid @enderror">
+                                        <option value="">---Select Tax---</option>
                                         @foreach($taxes as $tax)
                                             <option value="{{$tax->id}}">{{$tax->name}} %</option>
                                         @endforeach
@@ -144,7 +144,7 @@
                                     <div class="group row">
                                         <div class="form-group col-md-5">
                                              <select name="supplier_id[]" class="form-control">
-                                                <option>Select Supplier</option>
+                                                <option value="">Select Supplier</option>
                                                 @foreach($suppliers as $supplier)
                                                     <option value="{{$supplier->id}}">{{$supplier->name}} </option>
                                                 @endforeach

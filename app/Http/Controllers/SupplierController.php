@@ -39,11 +39,12 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:3|unique:suppliers|regex:/^[a-zA-Z ]+$/',
-            'address' => 'required|min:3',
-            'mobile' => 'required|min:3|digits:11',
-            'details' => 'required|min:3|',
-            'previous_balance' => 'min:3',
+            // 'name' => 'required|min:3|unique:suppliers|regex:/^[a-zA-Z ]+$/',
+            'name' => 'required|min:3|unique:suppliers',
+            'address' => 'nullable|min:3',
+            'mobile' => 'nullable|min:3|digits:11',
+            'details' => 'nullable|min:3',
+            'previous_balance' => 'nullable|min:3',
 
         ]);
 
@@ -92,10 +93,10 @@ class SupplierController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/',
-            'address' => 'required|min:3',
-            'mobile' => 'required|min:3|digits:11',
-            'details' => 'required|min:3|',
-            'previous_balance' => 'min:3',
+            'address' => 'nullable|min:3',
+            'mobile' => 'nullable|min:3|digits:11',
+            'details' => 'nullable|min:3|',
+            'previous_balance' => 'nullable|min:3',
         ]);
 
         $supplier = Supplier::findOrFail($id);

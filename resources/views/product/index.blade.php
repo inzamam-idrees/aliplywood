@@ -49,7 +49,7 @@
                                      <td>{{$add->product->sales_price}}</td>
                                      <td>{{$add->price}}</td>
                                      <td>{{$add->supplier->name}}</td>
-                                     <td><img width="40px" src="{{ asset('images/product/'.$add->product->image) }}"></td>
+                                     <td><img width="40px" src="{{ ($add->product->image) ? asset('images/product/'.$add->product->image) : 'https://demofree.sirv.com/nope-not-here.jpg' }}"></td>
 
                                      <td>
                                          <a class="btn btn-primary btn-sm" href="{{ route('product.edit', $add->product->id) }}"><i class="fa fa-edit" ></i></a>

@@ -49,15 +49,16 @@ class ProductController extends Controller
     public function store(Request $request)
     {
 
-         $request->validate([
-            'name' => 'required|min:3|unique:products|regex:/^[a-zA-Z ]+$/',
+        $request->validate([
+            // 'name' => 'required|min:3|unique:products|regex:/^[a-zA-Z ]+$/',
+            'name' => 'required|min:3|unique:products',
             'serial_number' => 'required',
-            'model' => 'required|min:3',
+            // 'model' => 'required|min:3',
             'category_id' => 'required',
             'sales_price' => 'required',
             'unit_id' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'tax_id' => 'required',
+            // 'tax_id' => 'required',
 
         ]);
 
@@ -119,7 +120,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $productId = $id; // The specific product ID you want to retrieve associated ProductSupplier record for
-$additional = ProductSupplier::where('product_id', $productId)->first();
+        $additional = ProductSupplier::where('product_id', $productId)->first();
 
         $product =Product::findOrFail($id);
         $suppliers =Supplier::all();
@@ -187,79 +188,80 @@ $additional = ProductSupplier::where('product_id', $productId)->first();
     // }
 
     public function update(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required|min:3|unique:products,name,' . $id . '|regex:/^[a-zA-Z ]+$/',
-        'serial_number' => 'required',
-        'model' => 'required|min:3',
-        'category_id' => 'required',
-        'sales_price' => 'required',
-        'unit_id' => 'required',
-        'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'tax_id' => 'required',
-        'supplier_id.*' => 'required|exists:suppliers,id',
-        'supplier_price.*' => 'required|numeric|min:0',
-    ]);
+    {
+        $request->validate([
+            // 'name' => 'required|min:3|unique:products,name,' . $id . '|regex:/^[a-zA-Z ]+$/',
+            'name' => 'required|min:3|unique:products,name,' . $id . '',
+            'serial_number' => 'required',
+            // 'model' => 'required|min:3',
+            'category_id' => 'required',
+            'sales_price' => 'required',
+            'unit_id' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'tax_id' => 'required',
+            'supplier_id.*' => 'required|exists:suppliers,id',
+            'supplier_price.*' => 'required|numeric|min:0',
+        ]);
 
-    $product = Product::find($id);
+        $product = Product::find($id);
 
-    if (!$product) {
-        return redirect()->back()->with('error', 'Product not found');
-    }
-
-    $product->name = $request->name;
-    $product->serial_number = $request->serial_number;
-    $product->model = $request->model;
-    $product->category_id = $request->category_id;
-    $product->sales_price = $request->sales_price;
-    $product->unit_id = $request->unit_id;
-    $product->tax_id = $request->tax_id;
-
-    // if ($request->hasFile('image')) {
-    //     $existingImagePath = public_path("images/product/{$product->image}");
-    //     if (file_exists($existingImagePath) && is_file($existingImagePath)) {
-    //         unlink($existingImagePath); // Delete the existing image file
-    //     }
-
-    //     $imageName = $request->image->getClientOriginalName();
-    //     $request->image->move(public_path('images/product/'), $imageName);
-    //     $product->image = $imageName;
-    // }
-
-    if ($request->hasFile('image')) {
-        // Delete the existing image file if it exists
-        $existingImagePath = public_path("images/product/{$product->image}");
-        if (file_exists($existingImagePath) && is_file($existingImagePath)) {
-            unlink($existingImagePath);
-        }
-    
-        $imageName = time() . '_' . uniqid() . '.' . $request->image->getClientOriginalExtension();    
-        $request->image->move(public_path('images/product/'), $imageName);
-    
-        $product->image = $imageName;
-    }
-    
-
-    $product->save();
-
-            // Update or create product suppliers
-    foreach ($request->supplier_id as $key => $supplier_id) {
-        $supplier = ProductSupplier::where('product_id', $product->id)
-            ->where('supplier_id', $supplier_id)
-            ->first();
-
-        if (!$supplier) {
-            $supplier = new ProductSupplier();
-            $supplier->product_id = $product->id;
-            $supplier->supplier_id = $supplier_id;
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found');
         }
 
-        $supplier->price = $request->supplier_price[$key];
-        $supplier->save();
-    }
+        $product->name = $request->name;
+        $product->serial_number = $request->serial_number;
+        $product->model = $request->model;
+        $product->category_id = $request->category_id;
+        $product->sales_price = $request->sales_price;
+        $product->unit_id = $request->unit_id;
+        $product->tax_id = $request->tax_id;
 
-    return redirect()->back()->with('message', 'Product has been updated successfully');
-}
+        // if ($request->hasFile('image')) {
+        //     $existingImagePath = public_path("images/product/{$product->image}");
+        //     if (file_exists($existingImagePath) && is_file($existingImagePath)) {
+        //         unlink($existingImagePath); // Delete the existing image file
+        //     }
+
+        //     $imageName = $request->image->getClientOriginalName();
+        //     $request->image->move(public_path('images/product/'), $imageName);
+        //     $product->image = $imageName;
+        // }
+
+        if ($request->hasFile('image')) {
+            // Delete the existing image file if it exists
+            $existingImagePath = public_path("images/product/{$product->image}");
+            if (file_exists($existingImagePath) && is_file($existingImagePath)) {
+                unlink($existingImagePath);
+            }
+        
+            $imageName = time() . '_' . uniqid() . '.' . $request->image->getClientOriginalExtension();    
+            $request->image->move(public_path('images/product/'), $imageName);
+        
+            $product->image = $imageName;
+        }
+        
+
+        $product->save();
+
+        // Update or create product suppliers
+        foreach ($request->supplier_id as $key => $supplier_id) {
+            $supplier = ProductSupplier::where('product_id', $product->id)
+                ->where('supplier_id', $supplier_id)
+                ->first();
+
+            if (!$supplier) {
+                $supplier = new ProductSupplier();
+                $supplier->product_id = $product->id;
+                $supplier->supplier_id = $supplier_id;
+            }
+
+            $supplier->price = $request->supplier_price[$key];
+            $supplier->save();
+        }
+
+        return redirect()->back()->with('message', 'Product has been updated successfully');
+    }
 
 
     /**

@@ -19,7 +19,7 @@ class CreateSalesTable extends Migration
             $table->bigInteger('product_id')->unsigned();
             $table->integer('qty');
             $table->integer('price');
-            $table->integer('dis');
+            $table->integer('dis')->nullable();
             $table->integer('amount');
             $table->foreign('invoice_id')
                 ->references('id')->on('invoices')

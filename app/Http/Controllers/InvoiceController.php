@@ -58,7 +58,7 @@ class InvoiceController extends Controller
             'product_id' => 'required',
             'qty' => 'required',
             'price' => 'required',
-            'dis' => 'required',
+            // 'dis' => 'required',
             'amount' => 'required',
         ]);
 
@@ -136,7 +136,7 @@ class InvoiceController extends Controller
         'product_id' => 'required',
         'qty' => 'required',
         'price' => 'required',
-        'dis' => 'required',
+        // 'dis' => 'required',
         'amount' => 'required',
     ]);
 

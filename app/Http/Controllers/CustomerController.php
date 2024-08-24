@@ -39,12 +39,13 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:3|unique:customers|regex:/^[a-zA-Z ]+$/',
-            'address' => 'required|min:3',
-            'mobile' => 'required|min:3|digits:11',
-            'email' => 'required|email|unique:customers',
-            'details' => 'required|min:3|',
-            'previous_balance' => 'min:3',
+            // 'name' => 'required|min:3|unique:customers|regex:/^[a-zA-Z ]+$/',
+            'name' => 'required|min:3|unique:customers',
+            'address' => 'nullable|min:3',
+            'mobile' => 'nullable|min:3|digits:11',
+            'email' => 'nullable|email|unique:customers',
+            'details' => 'nullable|min:3|',
+            'previous_balance' => 'nullable|min:3',
 
         ]);
 
@@ -94,10 +95,10 @@ class CustomerController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/',
-            'address' => 'required|min:3',
-            'mobile' => 'required|min:3|digits:11',
-            'details' => 'required|min:3|',
-            'previous_balance' => 'min:3',
+            'address' => 'nullable|min:3',
+            'mobile' => 'nullable|min:3|digits:11',
+            'details' => 'nullable|min:3|',
+            'previous_balance' => 'nullable|min:3',
         ]);
 
         $customer = Customer::findOrFail($id);

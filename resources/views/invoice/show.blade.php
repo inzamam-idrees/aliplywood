@@ -29,7 +29,7 @@
                         </div>
                         <div class="row invoice-info">
                             <div class="col-4">From
-                                <address><strong>CodeAstro</strong><br>Demo,<br>Address<br>codeastro.com</address>
+                                <address><strong>Ali Plywood</strong><br>Address<br>aliplywood.com</address>
                             </div>
                             <div class="col-4">To
                                  <address><strong>{{$invoice->customer->name}}</strong><br>{{$invoice->customer->address}}<br>Phone: {{$invoice->customer->mobile}}<br>Email: {{$invoice->customer->email}}</address>

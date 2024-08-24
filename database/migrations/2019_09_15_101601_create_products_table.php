@@ -17,13 +17,16 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('serial_number');
-            $table->string('model');
-            $table->integer('category_id');
+            $table->string('model')->nullable();
+            $table->bigInteger('category_id')->unsigned();
             $table->string('sales_price');
-            $table->integer('unit_id');
-            $table->string('image');
-            $table->string('tax_id');
+            $table->bigInteger('unit_id')->unsigned();
+            $table->string('image')->nullable();
+            $table->string('tax_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('categories')->nullOnDelete();
+            $table->foreign('unit_id')->references('id')->on('units')->nullOnDelete();
         });
     }
 
