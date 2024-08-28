@@ -41,5 +41,9 @@ class User extends Authenticatable
         return ucfirst($this->f_name) . ' ' . ucfirst($this->l_name);
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'name';
+    }
 
 }

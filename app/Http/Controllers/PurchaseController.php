@@ -7,10 +7,14 @@ use App\Product;
 use App\Purchase;
 use App\Sale;
 use App\Supplier;
+use App\Category;
 use App\Invoice;
 use App\PurchaseDetail;
+use Carbon\Carbon;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Str;
 
 class PurchaseController extends Controller
 {
@@ -40,9 +44,10 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::select(['id', 'name'])->get();
+        $categories = Category::select(['id', 'name'])->get();
         $products = Product::all();
-        return view('purchase.create', compact('suppliers','products'));
+        return view('purchase.create', compact('suppliers','categories','products'));
     }
 
     /**
@@ -52,43 +57,83 @@ class PurchaseController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-{
-    // Validation rules
-    $request->validate([
-        'supplier_id' => 'required|exists:suppliers,id',
-        'date' => 'required|date',
-        'product_id.*' => 'required|exists:products,id',
-        'qty.*' => 'required|numeric|min:1',
-        'price.*' => 'required|numeric|min:0',
-        'dis.*' => 'required|numeric|min:0|max:100',
-        'amount.*' => 'required|numeric|min:0',
-    ]);
+    {
+        // Validation rules
+        $request->validate([
+            // 'supplier_id' => 'required|exists:suppliers,id',
+            // 'date' => 'required|date',
+            // 'product_id.*' => 'required|exists:products,id',
+            // 'qty.*' => 'required|numeric|min:1',
+            // 'price.*' => 'required|numeric|min:0',
+            // 'dis.*' => 'required|numeric|min:0|max:100',
+            // 'amount.*' => 'required|numeric|min:0',
+            'supplier_id'   => 'required',
+            'date'          => 'required|string',
+            'total_amount'  => 'required|numeric',
+        ]);
 
-    // Create a new purchase
-    $purchase = new Purchase();
-    $purchase->supplier_id = $request->supplier_id;
-    $purchase->date = $request->date;
-    // Add other fields if needed
+        // Create a new purchase
+        $purchase = new Purchase();
+        $purchase->supplier_id = $request->supplier_id;
+        $purchase->purchase_no = IdGenerator::generate([
+            'table' => 'purchases',
+            'field' => 'purchase_no',
+            'length' => 10,
+            'prefix' => 'PRS-'
+        ]);
+        $purchase->date = $request->date;
+        $purchase->total_amount = $request->total_amount;
+        $purchase->status = 1;
 
-    // Save the purchase
-    $purchase->save();
+        // Save the purchase
+        $purchase->save();
 
-    // Store purchase details
-foreach ($request->product_id as $key => $productId) {
-    $purchase->purchaseDetails()->create([
-        'supplier_id' => $request->supplier_id, // Include supplier_id
-        'product_id' => $productId,
-        'qty' => $request->qty[$key],
-        'price' => $request->price[$key],
-        'discount' => $request->dis[$key],
-        'amount' => $request->amount[$key],
-        // Add other details if needed
-    ]);
-}
+        // // Store purchase details
+        // foreach ($request->product_id as $key => $productId) {
+        //     $purchase->purchaseDetails()->create([
+        //         'supplier_id' => $request->supplier_id, // Include supplier_id
+        //         'product_id' => $productId,
+        //         'qty' => $request->qty[$key],
+        //         'price' => $request->price[$key],
+        //         'discount' => $request->dis[$key],
+        //         'amount' => $request->amount[$key],
+        //         // Add other details if needed
+        //     ]);
+        // }
+
+        foreach ($request->product_id as $key => $productId) {
+
+            $pDetails['purchase_id']    = $purchase->id;
+            $pDetails['product_id']     = $request->product_id[$key];
+            $pDetails['quantity']       = $request->qty[$key];
+            $pDetails['unitcost']       = intval($request->price[$key]);
+            $pDetails['total']          = $request->amount[$key];
+            $pDetails['created_at']     = Carbon::now();
+
+            $purchase->details()->insert($pDetails);
+        }
+
+        // if (! $request->invoiceProducts == null)
+        // {
+        //     $pDetails = [];
+
+        //     foreach ($request->invoiceProducts as $product)
+        //     {
+        //         $pDetails['purchase_id']    = $purchase['id'];
+        //         $pDetails['product_id']     = $product['product_id'];
+        //         $pDetails['quantity']       = $product['quantity'];
+        //         $pDetails['unitcost']       = intval($product['unitcost']);
+        //         $pDetails['total']          = $product['total'];
+        //         $pDetails['created_at']     = Carbon::now();
+
+        //         //PurchaseDetails::insert($pDetails);
+        //         $purchase->details()->insert($pDetails);
+        //     }
+        // }
 
 
-    return redirect()->route('purchase.index')->with('success', 'Purchase added successfully');
-}
+        return redirect()->route('purchase.index')->with('success', 'Purchase has been created!');
+    }
 
     public function findPrice(Request $request){
         $data = DB::table('products')->select('sales_price')->where('id', $request->id)->first();
@@ -96,12 +141,14 @@ foreach ($request->product_id as $key => $productId) {
     }
 
     public function findPricePurchase(Request $request) {
-        $data = DB::table('product_suppliers')
-                ->select('price')
-                ->where('product_id', $request->id)
-                ->where('supplier_id', $request->supplier_id) // Assuming you pass supplier_id from the frontend
-                ->first();
+        // $data = DB::table('product_suppliers')
+        //         ->select('price')
+        //         ->where('product_id', $request->id)
+        //         ->where('supplier_id', $request->supplier_id) // Assuming you pass supplier_id from the frontend
+        //         ->first();
     
+        // return response()->json($data);
+        $data = DB::table('products')->select('buying_price')->where('id', $request->id)->first();
         return response()->json($data);
     }    
 

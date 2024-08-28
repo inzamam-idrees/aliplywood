@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
+use Str;
 
 class CategoryController extends Controller
 {
@@ -51,11 +52,12 @@ class CategoryController extends Controller
 
         $category = new Category();
         $category->name = $request->name;
-        $category->slug = str_slug($request->name);
+        // $category->slug = str_slug($request->name);
+        $category->slug = Str::slug($request->name);
         $category->status = 1;
         $category->save();
 
-        return redirect()->back()->with('message', 'New category has been added successfully!');
+        return redirect()->back()->with('message', 'Category has been created!');
     }
 
     /**
@@ -97,10 +99,11 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($id);
         $category->name = $request->name;
-        $category->slug = str_slug($request->name);
+        // $category->slug = str_slug($request->name);
+        $category->slug = Str::slug($request->name);
         $category->save();
 
-        return redirect()->back()->with('message', 'Category updated successfully!');
+        return redirect()->back()->with('message', 'Category has been updated!');
     }
 
     /**
@@ -113,7 +116,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         $category->delete();
-        return redirect()->back();
+        return redirect()->back()->with('message', 'Category has been deleted!');
 
     }
 }

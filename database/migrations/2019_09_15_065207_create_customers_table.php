@@ -16,11 +16,12 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('mobile')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('mobile')->unique()->nullable();
             $table->string('address')->nullable();
-            $table->string('email')->nullable();
+            $table->string('photo')->nullable();
             $table->text('details')->nullable();
-            $table->text('previous_balance')->nullable();
+            // $table->text('previous_balance')->nullable();
             $table->timestamps();
         });
     }

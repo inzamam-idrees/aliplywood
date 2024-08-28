@@ -15,6 +15,15 @@ class CreatePurchasesTable extends Migration
     {
         Schema::create('purchases', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('supplier_id')->unsigned();
+            $table->string('date');
+            $table->string('purchase_no');
+            $table->tinyInteger('status')
+                ->default(0)
+                ->comment('0=Pending, 1=Approved');
+            $table->integer('total_amount');
+
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -29,9 +29,10 @@
                         <table class="table table-hover table-bordered" id="sampleTable">
                             <thead>
                             <tr>
-                                <th>Invoice ID </th>
-                                <th>Customer Name </th>
+                                <th>Invoice No. </th>
+                                <th>Customer </th>
                                 <th>Date </th>
+                                <th>Total </th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -39,9 +40,12 @@
 
                              @foreach($invoices as $invoice)
                                  <tr>
-                                     <td>{{1000+$invoice->id}}</td>
+                                     <!-- <td>{{1000+$invoice->id}}</td> -->
+                                     <td>{{$invoice->invoice_no}}</td>
                                      <td>{{$invoice->customer->name}}</td>
-                                     <td>{{$invoice->created_at->format('Y-m-d')}}</td>
+                                     <!-- <td>{{$invoice->created_at->format('Y-m-d')}}</td> -->
+                                     <td>{{$invoice->order_date->format('Y-m-d')}}</td>
+                                     <td>{{$invoice->total}}</td>
                                      <td>
                                          <a class="btn btn-primary btn-sm" href="{{route('invoice.show', $invoice->id)}}"><i class="fa fa-eye" ></i></a>
                                          <a class="btn btn-info btn-sm" href="{{route('invoice.edit', $invoice->id)}}"><i class="fa fa-edit" ></i></a>

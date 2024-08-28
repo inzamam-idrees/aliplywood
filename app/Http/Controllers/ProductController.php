@@ -9,6 +9,7 @@ use App\Supplier;
 use App\Tax;
 use App\Unit;
 use Illuminate\Http\Request;
+use Str;
 
 class ProductController extends Controller
 {
@@ -20,9 +21,11 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::all();
-        $additional = ProductSupplier::all();
-        return view('product.index', compact('products','additional'));
+        // $products = Product::all();
+        // $additional = ProductSupplier::all();
+        // return view('product.index', compact('products','additional'));
+        $products = Product::with(['category', 'unit'])->get();
+        return view('product.index', compact('products'));
     }
 
     /**
@@ -32,12 +35,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $suppliers =Supplier::all();
+        // $suppliers =Supplier::all();
+        // $taxes = Tax::all();
         $categories = Category::all();
-        $taxes = Tax::all();
         $units = Unit::all();
 
-        return view('product.create', compact('categories','taxes','units','suppliers'));
+        // return view('product.create', compact('categories','taxes','units','suppliers'));
+        return view('product.create', compact('categories','units'));
     }
 
     /**
@@ -51,33 +55,35 @@ class ProductController extends Controller
 
         $request->validate([
             // 'name' => 'required|min:3|unique:products|regex:/^[a-zA-Z ]+$/',
+            // 'sales_price' => 'required',
+            // 'tax_id' => 'required',
             'name' => 'required|min:3|unique:products',
             'serial_number' => 'required',
-            // 'model' => 'required|min:3',
-            'category_id' => 'required',
-            'sales_price' => 'required',
-            'unit_id' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'tax_id' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category_id'       => 'required|integer',
+            'unit_id'           => 'required|integer',
+            'quantity'          => 'required|integer',
+            'buying_price'      => 'required|integer',
+            'selling_price'     => 'required|integer',
+            'quantity_alert'    => 'required|integer',
+            'notes'             => 'nullable|max:1000'
 
         ]);
 
 
         $product = new Product();
         $product->name = $request->name;
+        $product->slug = Str::slug($request->name, '-');
         $product->serial_number = $request->serial_number;
-        $product->model = $request->model;
+        $product->quantity = $request->quantity;
+        $product->quantity_alert = $request->quantity_alert;
         $product->category_id = $request->category_id;
-        $product->sales_price = $request->sales_price;
         $product->unit_id = $request->unit_id;
-        $product->tax_id = $request->tax_id;
-
-
-        // if ($request->hasFile('image')){
-        //     $imageName =request()->image->getClientOriginalName();
-        //     request()->image->move(public_path('images/product/'), $imageName);
-        //     $product->image = $imageName;
-        // }
+        $product->buying_price = $request->buying_price;
+        $product->selling_price = $request->selling_price;
+        $product->notes = $request->notes;
+        // $product->sales_price = $request->sales_price;
+        // $product->tax_id = $request->tax_id;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -86,18 +92,16 @@ class ProductController extends Controller
             $product->image = $imageName;
         }
 
-
-
         $product->save();
 
-        foreach($request->supplier_id as $key => $supplier_id){
-            $supplier = new ProductSupplier();
-            $supplier->product_id = $product->id;
-            $supplier->supplier_id = $request->supplier_id[$key];
-            $supplier->price = $request->supplier_price[$key];
-            $supplier->save();
-        }
-        return redirect()->back()->with('message', 'New product has been added successfully');
+        // foreach($request->supplier_id as $key => $supplier_id){
+        //     $supplier = new ProductSupplier();
+        //     $supplier->product_id = $product->id;
+        //     $supplier->supplier_id = $request->supplier_id[$key];
+        //     $supplier->price = $request->supplier_price[$key];
+        //     $supplier->save();
+        // }
+        return redirect()->back()->with('message', 'Product has been created!');
     }
 
     /**
@@ -119,15 +123,16 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $productId = $id; // The specific product ID you want to retrieve associated ProductSupplier record for
-        $additional = ProductSupplier::where('product_id', $productId)->first();
+        // $productId = $id; // The specific product ID you want to retrieve associated ProductSupplier record for
+        // $additional = ProductSupplier::where('product_id', $productId)->first();
 
         $product =Product::findOrFail($id);
-        $suppliers =Supplier::all();
+        // $suppliers =Supplier::all();
+        // $taxes = Tax::all();
         $categories = Category::all();
-        $taxes = Tax::all();
         $units = Unit::all();
-        return view('product.edit', compact('additional','suppliers','categories','taxes','units','product'));
+        // return view('product.edit', compact('additional','suppliers','categories','taxes','units','product'));
+        return view('product.edit', compact('categories','units','product'));
     }
 
     /**
@@ -191,16 +196,16 @@ class ProductController extends Controller
     {
         $request->validate([
             // 'name' => 'required|min:3|unique:products,name,' . $id . '|regex:/^[a-zA-Z ]+$/',
-            'name' => 'required|min:3|unique:products,name,' . $id . '',
-            'serial_number' => 'required',
-            // 'model' => 'required|min:3',
-            'category_id' => 'required',
-            'sales_price' => 'required',
-            'unit_id' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'tax_id' => 'required',
-            'supplier_id.*' => 'required|exists:suppliers,id',
-            'supplier_price.*' => 'required|numeric|min:0',
+            'name'              => 'required|min:3|unique:products,name,' . $id . '',
+            'serial_number'     => 'required',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category_id'       => 'required|integer',
+            'unit_id'           => 'required|integer',
+            'quantity'          => 'required|integer',
+            'buying_price'      => 'required|integer',
+            'selling_price'     => 'required|integer',
+            'quantity_alert'    => 'required|integer',
+            'notes'             => 'nullable|max:1000'
         ]);
 
         $product = Product::find($id);
@@ -210,23 +215,15 @@ class ProductController extends Controller
         }
 
         $product->name = $request->name;
+        $product->slug = Str::slug($request->name, '-');
         $product->serial_number = $request->serial_number;
-        $product->model = $request->model;
         $product->category_id = $request->category_id;
-        $product->sales_price = $request->sales_price;
         $product->unit_id = $request->unit_id;
-        $product->tax_id = $request->tax_id;
-
-        // if ($request->hasFile('image')) {
-        //     $existingImagePath = public_path("images/product/{$product->image}");
-        //     if (file_exists($existingImagePath) && is_file($existingImagePath)) {
-        //         unlink($existingImagePath); // Delete the existing image file
-        //     }
-
-        //     $imageName = $request->image->getClientOriginalName();
-        //     $request->image->move(public_path('images/product/'), $imageName);
-        //     $product->image = $imageName;
-        // }
+        $product->quantity = $request->quantity;
+        $product->buying_price = $request->buying_price;
+        $product->selling_price = $request->selling_price;
+        $product->quantity_alert = $request->quantity_alert;
+        $product->notes = $request->notes;
 
         if ($request->hasFile('image')) {
             // Delete the existing image file if it exists
@@ -245,22 +242,22 @@ class ProductController extends Controller
         $product->save();
 
         // Update or create product suppliers
-        foreach ($request->supplier_id as $key => $supplier_id) {
-            $supplier = ProductSupplier::where('product_id', $product->id)
-                ->where('supplier_id', $supplier_id)
-                ->first();
+        // foreach ($request->supplier_id as $key => $supplier_id) {
+        //     $supplier = ProductSupplier::where('product_id', $product->id)
+        //         ->where('supplier_id', $supplier_id)
+        //         ->first();
 
-            if (!$supplier) {
-                $supplier = new ProductSupplier();
-                $supplier->product_id = $product->id;
-                $supplier->supplier_id = $supplier_id;
-            }
+        //     if (!$supplier) {
+        //         $supplier = new ProductSupplier();
+        //         $supplier->product_id = $product->id;
+        //         $supplier->supplier_id = $supplier_id;
+        //     }
 
-            $supplier->price = $request->supplier_price[$key];
-            $supplier->save();
-        }
+        //     $supplier->price = $request->supplier_price[$key];
+        //     $supplier->save();
+        // }
 
-        return redirect()->back()->with('message', 'Product has been updated successfully');
+        return redirect()->back()->with('message', 'Product has been updated!');
     }
 
 
@@ -273,8 +270,12 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
+        $existingImagePath = public_path("images/product/{$product->image}");
+        if (file_exists($existingImagePath) && is_file($existingImagePath)) {
+            unlink($existingImagePath);
+        }
         $product->delete();
-        return redirect()->back();
+        return redirect()->back()->with('message', 'Product has been deleted!');
 
     }
 }

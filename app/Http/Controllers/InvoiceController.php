@@ -8,6 +8,10 @@ use App\Sale;
 use App\Sales;
 use App\Supplier;
 use App\Invoice;
+use App\Order;
+use App\OrderDetails;
+use Carbon\Carbon;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,8 +43,8 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        $customers = Customer::all();
-        $products = Product::all();
+        $customers = Customer::get(['id', 'name']);
+        $products = Product::with(['category', 'unit'])->get();
         return view('invoice.create', compact('customers','products'));
     }
 
@@ -53,42 +57,77 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-
             'customer_id' => 'required',
-            'product_id' => 'required',
-            'qty' => 'required',
-            'price' => 'required',
-            // 'dis' => 'required',
-            'amount' => 'required',
+            'order_date' => 'required|string',
         ]);
 
-        $invoice = new Invoice();
-        $invoice->customer_id = $request->customer_id;
-        $invoice->total = 1000;
-        $invoice->save();
+        $order = new Order();
+        $order->customer_id = $request->customer_id;
+        $order->payment_type = "HandCash";
+        $order->order_date = Carbon::parse($request->order_date)->format('Y-m-d');
+        $order->order_status = 1;
+        $order->pay = $request->total;
+        $order->total_products = $request->total_products;
+        $order->sub_total = $request->sub_total;
+        $order->discount = $request->discount;
+        $order->total = $request->total;
+        $order->due = 0;
+        $order->invoice_no = IdGenerator::generate([
+            'table' => 'orders',
+            'field' => 'invoice_no',
+            'length' => 10,
+            'prefix' => 'INV-'
+        ]);
+        $order->save();
 
         foreach ( $request->product_id as $key => $product_id){
-            $sale = new Sale();
-            $sale->qty = $request->qty[$key];
-            $sale->price = $request->price[$key];
+            $sale = new OrderDetails();
+            $sale->quantity = $request->qty[$key];
+            $sale->unitcost = $request->price[$key];
             $sale->dis = $request->dis[$key];
-            $sale->amount = $request->amount[$key];
+            $sale->total = $request->amount[$key];
             $sale->product_id = $request->product_id[$key];
-            $sale->invoice_id = $invoice->id;
+            $sale->order_id = $order->id;
             $sale->save();
+        }
 
-
-         }
-
-         return redirect('invoice/'.$invoice->id)->with('message','Invoice created Successfully');
-
-
-
-
+        return redirect('invoice/'.$order->id)->with('message','Invoice created Successfully');
     }
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+
+    //         'customer_id' => 'required',
+    //         'product_id' => 'required',
+    //         'qty' => 'required',
+    //         'price' => 'required',
+    //         // 'dis' => 'required',
+    //         'amount' => 'required',
+    //     ]);
+
+    //     $invoice = new Invoice();
+    //     $invoice->customer_id = $request->customer_id;
+    //     $invoice->total = 1000;
+    //     $invoice->save();
+
+    //     foreach ( $request->product_id as $key => $product_id){
+    //         $sale = new Sale();
+    //         $sale->qty = $request->qty[$key];
+    //         $sale->price = $request->price[$key];
+    //         $sale->dis = $request->dis[$key];
+    //         $sale->amount = $request->amount[$key];
+    //         $sale->product_id = $request->product_id[$key];
+    //         $sale->invoice_id = $invoice->id;
+    //         $sale->save();
+    //     }
+
+    //     return redirect('invoice/'.$invoice->id)->with('message','Invoice created Successfully');
+    // }
+
     public function findPrice(Request $request){
-        $data = DB::table('products')->select('sales_price')->where('id', $request->id)->first();
+        // $data = DB::table('products')->select('sales_price')->where('id', $request->id)->first();
+        $data = DB::table('products')->select('selling_price')->where('id', $request->id)->first();
         return response()->json($data);
     }
 
@@ -100,8 +139,10 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        $invoice = Invoice::findOrFail($id);
-        $sales = Sale::where('invoice_id', $id)->get();
+        // $invoice = Invoice::findOrFail($id);
+        // $sales = Sale::where('invoice_id', $id)->get();
+        $invoice = Order::findOrFail($id);
+        $sales = OrderDetails::where('order_id', $id)->get();
         return view('invoice.show', compact('invoice','sales'));
 
     }
@@ -116,8 +157,11 @@ class InvoiceController extends Controller
     {
         $customers = Customer::all();
         $products = Product::orderBy('id', 'DESC')->get();
-        $invoice = Invoice::findOrFail($id);
-        $sales = Sale::where('invoice_id', $id)->get();
+        // $invoice = Invoice::findOrFail($id);
+        // $sales = Sale::where('invoice_id', $id)->get();
+        // return view('invoice.edit', compact('customers','products','invoice','sales'));
+        $invoice = Order::findOrFail($id);
+        $sales = OrderDetails::where('order_id', $id)->get();
         return view('invoice.edit', compact('customers','products','invoice','sales'));
     }
 
@@ -131,36 +175,53 @@ class InvoiceController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'customer_id' => 'required',
+            'order_date' => 'required|string',
+        ]);
 
-        'customer_id' => 'required',
-        'product_id' => 'required',
-        'qty' => 'required',
-        'price' => 'required',
-        // 'dis' => 'required',
-        'amount' => 'required',
-    ]);
+        $order = Order::findOrFail($id);
+        $order->customer_id = $request->customer_id;
+        $order->payment_type = "HandCash";
+        $order->order_date = Carbon::parse($request->order_date)->format('Y-m-d');
+        $order->order_status = 1;
+        $order->pay = $request->total;
+        $order->total_products = $request->total_products;
+        $order->sub_total = $request->sub_total;
+        $order->discount = $request->discount;
+        $order->total = $request->total;
+        $order->due = 0;
+        $order->save();
 
-        $invoice = Invoice::findOrFail($id);
-        $invoice->customer_id = $request->customer_id;
-        $invoice->total = 1000;
-        $invoice->save();
+        // $invoice = Invoice::findOrFail($id);
+        // $invoice->customer_id = $request->customer_id;
+        // $invoice->total = 1000;
+        // $invoice->save();
 
-        Sale::where('invoice_id', $id)->delete();
+        // Sale::where('invoice_id', $id)->delete();
+        OrderDetails::where('order_id', $id)->delete();
 
         foreach ( $request->product_id as $key => $product_id){
-            $sale = new Sale();
-            $sale->qty = $request->qty[$key];
-            $sale->price = $request->price[$key];
+            // $sale = new Sale();
+            // $sale->qty = $request->qty[$key];
+            // $sale->price = $request->price[$key];
+            // $sale->dis = $request->dis[$key];
+            // $sale->amount = $request->amount[$key];
+            // $sale->product_id = $request->product_id[$key];
+            // $sale->invoice_id = $invoice->id;
+            // $sale->save();
+            
+            $sale = new OrderDetails();
+            $sale->quantity = $request->qty[$key];
+            $sale->unitcost = $request->price[$key];
             $sale->dis = $request->dis[$key];
-            $sale->amount = $request->amount[$key];
+            $sale->total = $request->amount[$key];
             $sale->product_id = $request->product_id[$key];
-            $sale->invoice_id = $invoice->id;
+            $sale->order_id = $order->id;
             $sale->save();
-
 
         }
 
-         return redirect('invoice/'.$invoice->id)->with('message','invoice created Successfully');
+         return redirect('invoice/'.$order->id)->with('message','Invoice updated Successfully');
 
 
     }
@@ -174,10 +235,18 @@ class InvoiceController extends Controller
 
     public function destroy($id)
     {
-        Sales::where('invoice_id', $id)->delete();
-        $invoice = Invoice::findOrFail($id);
+        // Sales::where('invoice_id', $id)->delete();
+        // $invoice = Invoice::findOrFail($id);
+        OrderDetails::where('order_id', $id)->delete();
+        $invoice = Order::findOrFail($id);
         $invoice->delete();
         return redirect()->back();
 
+    }
+
+    public function downloadInvoice($id)
+    {
+        $order = Order::with(['customer', 'details'])->firstOrFail($id);
+        return view('invoice.print-invoice', ['order' => $order]);
     }
 }

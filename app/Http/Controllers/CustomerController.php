@@ -40,25 +40,34 @@ class CustomerController extends Controller
     {
         $request->validate([
             // 'name' => 'required|min:3|unique:customers|regex:/^[a-zA-Z ]+$/',
-            'name' => 'required|min:3|unique:customers',
-            'address' => 'nullable|min:3',
+            'name' => 'required|min:3|max:50',
+            'email' => 'nullable|email|max:50|unique:customers',
             'mobile' => 'nullable|min:3|digits:11',
-            'email' => 'nullable|email|unique:customers',
-            'details' => 'nullable|min:3|',
-            'previous_balance' => 'nullable|min:3',
+            'address' => 'nullable|string|min:3|max:100',
+            'photo' => 'image|file|max:2048',
+            'details' => 'nullable|min:3',
+            // 'previous_balance' => 'nullable|min:3',
 
         ]);
 
         $customer = new Customer();
         $customer->name = $request->name;
-        $customer->address = $request->address;
-        $customer->mobile = $request->mobile;
         $customer->email = $request->email;
+        $customer->mobile = $request->mobile;
+        $customer->address = $request->address;
         $customer->details = $request->details;
-        $customer->previous_balance = $request->previous_balance;
+        // $customer->previous_balance = $request->previous_balance;
+
+        if ($request->hasFile('photo')) {
+            $image = $request->file('photo');
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();        
+            $image->move(public_path('images/customer/'), $imageName);
+            $customer->photo = $imageName;
+        }
+
         $customer->save();
 
-        return redirect()->back()->with('message', 'Customer added successfully');
+        return redirect()->back()->with('message', 'New customer has been created!');
     }
 
     /**
@@ -94,11 +103,12 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/',
-            'address' => 'nullable|min:3',
+            'name' => 'required|min:3|max:50',
+            'email' => 'nullable|email|max:50|unique:customers',
             'mobile' => 'nullable|min:3|digits:11',
-            'details' => 'nullable|min:3|',
-            'previous_balance' => 'nullable|min:3',
+            'address' => 'nullable|string|min:3|max:100',
+            'photo' => 'image|file|max:2048',
+            'details' => 'nullable|min:3',
         ]);
 
         $customer = Customer::findOrFail($id);
@@ -106,10 +116,20 @@ class CustomerController extends Controller
         $customer->address = $request->address;
         $customer->mobile = $request->mobile;
         $customer->details = $request->details;
-        $customer->previous_balance = $request->previous_balance;
+        // $customer->previous_balance = $request->previous_balance;
+        $image = $customer->photo;
+        if ($request->hasFile('photo')) {
+            if ($customer->photo) {
+                unlink(public_path('images/customer/') . $customer->photo);
+            }
+            $imageNew = $request->file('photo');
+            $imageName = time() . '_' . uniqid() . '.' . $imageNew->getClientOriginalExtension();        
+            $imageNew->move(public_path('images/customer/'), $imageName);
+            $customer->photo = $imageName;
+        }
         $customer->save();
 
-        return redirect()->back()->with('message', 'Customer Updated Successfully');
+        return redirect()->back()->with('message', 'Customer has been updated!');
     }
 
     /**
@@ -121,8 +141,11 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         $customer = Customer::find($id);
+        if ($customer->photo) {
+            unlink(public_path('images/customer/') . $customer->photo);
+        }
         $customer->delete();
-        return redirect()->back();
+        return redirect()->back()->with('message', 'Customer has been deleted!');
 
     }
 }

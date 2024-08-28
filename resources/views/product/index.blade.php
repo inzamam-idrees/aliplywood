@@ -30,33 +30,37 @@
                             <thead>
                             <tr>
                                 <th>Product </th>
-                                <th>Model </th>
+                                <!-- <th>Model </th> -->
                                 <th>Serial</th>
-                                <th>Sales Price</th>
-                                <th>Purchase Price</th>
-                                <th>Supplier</th>
+                                <!-- <th>Sales Price</th> -->
+                                <!-- <th>Purchase Price</th> -->
+                                <!-- <th>Supplier</th> -->
+                                <th>Category</th>
+                                <th>Quantity</th>
                                 <th>Image</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
                              <tbody>
 
-                             @foreach($additional as $add)
+                             @foreach($products as $product)
                                  <tr>
-                                     <td>{{$add->product->name}}</td>
-                                     <td>{{$add->product->model}}</td>
-                                     <td>{{$add->product->serial_number}}</td>
-                                     <td>{{$add->product->sales_price}}</td>
-                                     <td>{{$add->price}}</td>
-                                     <td>{{$add->supplier->name}}</td>
-                                     <td><img width="40px" src="{{ ($add->product->image) ? asset('images/product/'.$add->product->image) : 'https://demofree.sirv.com/nope-not-here.jpg' }}"></td>
+                                     <td>{{$product->name}}</td>
+                                     <!-- <td>{{$product->model}}</td> -->
+                                     <td>{{$product->serial_number}}</td>
+                                     <!-- <td>{{$product->sales_price}}</td> -->
+                                     <!-- <td>{{$price}}</td> -->
+                                     <!-- <td>{{$supplier->name}}</td> -->
+                                      <td>{{ $product->category ? $product->category->name : '--' }}</td>
+                                      <td>{{ $product->quantity }}</td>
+                                     <td><img width="40px" src="{{ ($product->image) ? asset('images/product/'.$product->image) : 'https://demofree.sirv.com/nope-not-here.jpg' }}"></td>
 
                                      <td>
-                                         <a class="btn btn-primary btn-sm" href="{{ route('product.edit', $add->product->id) }}"><i class="fa fa-edit" ></i></a>
-                                         <button class="btn btn-danger btn-sm waves-effect" type="submit" onclick="deleteTag({{ $add->product->id }})">
+                                         <a class="btn btn-primary btn-sm" href="{{ route('product.edit', $product->id) }}"><i class="fa fa-edit" ></i></a>
+                                         <button class="btn btn-danger btn-sm waves-effect" type="submit" onclick="deleteTag({{ $product->id }})">
                                              <i class="fa fa-trash"></i>
                                          </button>
-                                         <form id="delete-form-{{ $add->product->id }}" action="{{ route('product.destroy',$add->product->id) }}" method="POST" style="display: none;">
+                                         <form id="delete-form-{{ $product->id }}" action="{{ route('product.destroy',$product->id) }}" method="POST" style="display: none;">
                                              @csrf
                                              @method('DELETE')
                                          </form>

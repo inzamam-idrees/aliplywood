@@ -7,13 +7,13 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-edit"></i> Form Samples</h1>
-                <p>Sample forms</p>
+                <h1><i class="fa fa-edit"></i> Edit Invoice</h1>
+                <!-- <p>Sample forms</p> -->
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-                <li class="breadcrumb-item">Forms</li>
-                <li class="breadcrumb-item"><a href="#">Sample Forms</a></li>
+                <li class="breadcrumb-item">Invoices</li>
+                <li class="breadcrumb-item"><a href="#">Edit</a></li>
             </ul>
         </div>
 
@@ -30,14 +30,15 @@
                             <div class="form-group col-md-3">
                                 <label class="control-label">Customer Name</label>
                                 <select name="customer_id" class="form-control">
-                                    <option name="customer_id" value="{{$invoice->customer->id}}">{{$invoice->customer->name}}</option>
+                                    <!-- <option name="customer_id" value="{{$invoice->customer->id}}">{{$invoice->customer->name}}</option> -->
                                     @foreach($customers as $customer)
-                                        <option name="customer_id" value="{{$customer->id}}">{{$customer->name}} </option>
+                                        <option value="{{$customer->id}}" @selected( old('customer_id') == $invoice->customer_id)>{{$customer->name}} </option>
                                     @endforeach
-                                </select>                            </div>
+                                </select>
+                            </div>
                             <div class="form-group col-md-3">
                                 <label class="control-label">Date</label>
-                                <input name="date"  class="form-control datepicker"  value="<?php echo date('Y-m-d')?>" type="date" placeholder="Enter your email">
+                                <input name="order_date" class="form-control datepicker" value="<?php echo old('order_date', date($invoice->order_date)); ?>" type="date" placeholder="Date">
                             </div>
 
 
@@ -48,7 +49,7 @@
                                     <th scope="col">Product Name</th>
                                     <th scope="col">Qty</th>
                                     <th scope="col">Price</th>
-                                    <th scope="col">Discount</th>
+                                    <th scope="col">Discount %</th>
                                     <th scope="col">Amount</th>
                                     <th scope="col"><a class="addRow"><i class="fa fa-plus"></i></a></th>
                                 </tr>
@@ -56,28 +57,59 @@
                                 <tbody>
                                 @foreach($sales as $sale)
                                  <tr>
-                                    <td><select name="product_id[]" class="form-control productname" >
-                                            <option name="product_id[]" value="{{$sale->product->id}}">{{$sale->product->name}}</option>
+                                    <td>
+                                        <select name="product_id[]" class="form-control productname" >
+                                            <!-- <option name="product_id[]" value="{{$sale->product->id}}">{{$sale->product->name}}</option> -->
                                             @foreach($products as $product)
-                                                <option name="product_id[]" value="{{$product->id}}">{{$product->name}}</option>
+                                                <option value="{{$product->id}}" @if ($product->id == $sale->product_id) selected="selected" @endif>{{$product->name}}</option>
                                             @endforeach
-                                        </select></td>
-                                    <td><input value="{{$sale->qty}}" type="text" name="qty[]" class="form-control qty" ></td>
-                                    <td><input value="{{$sale->price}}" type="text" name="price[]" class="form-control price" ></td>
+                                        </select>
+                                    </td>
+                                    <td><input value="{{$sale->quantity}}" type="text" name="qty[]" class="form-control qty" ></td>
+                                    <td><input value="{{$sale->unitcost}}" type="text" name="price[]" class="form-control price" ></td>
                                     <td><input value="{{$sale->dis}}" type="text" name="dis[]" class="form-control dis" ></td>
-                                    <td><input value="{{$sale->amount}}" type="text" name="amount[]" class="form-control amount" ></td>
-                                    <td><a   class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>
+                                    <td><input value="{{$sale->total}}" type="text" name="amount[]" class="form-control amount" ></td>
+                                    <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>
                                 </tr>
                                 @endforeach
                                 </tbody>
                                 <tfoot>
-                                <tr>
+                                <!-- <tr>
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                     <td><b>Total</b></td>
                                     <td><b class="total"></b></td>
                                     <td></td>
+                                </tr> -->
+
+                                <tr>
+                                    <td colspan="5" class="text-end"><b>Total Product</b></td>
+                                    <td class="text-center">
+                                        <b class="total_products"></b>
+                                        <input type="hidden" name="total_products" class="totalProductsInput" value="{{ $invoice->total_products }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="text-end"><b>Sub Total</b></td>
+                                    <td class="text-center">
+                                        <b class="subtotal"></b>
+                                        <input type="hidden" name="sub_total" class="subtotalInput" value="{{ $invoice->sub_total }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="text-end"><b>Discount %</b></td>
+                                    <td class="text-center">
+                                        <b class="discount"></b>
+                                        <input type="hidden" name="discount" class="discountInput" value="{{ $invoice->discount }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="text-end"><b>Total</b></td>
+                                    <td class="text-center">
+                                        <b class="total"></b>
+                                        <input type="hidden" name="total" class="totalInput" value="{{ $invoice->total }}">
+                                    </td>
                                 </tr>
                                 </tfoot>
 
@@ -134,7 +166,8 @@
                     dataType: 'json',
                     data: {"_token": $('meta[name="csrf-token"]').attr('content'), 'id':id},
                     success:function (data) {
-                        tr.find('.price').val(data.sales_price);
+                        // tr.find('.price').val(data.sales_price);
+                        tr.find('.price').val(data.selling_price);
                     }
                 });
             });
@@ -150,12 +183,38 @@
                 total();
             });
             function total(){
+                var total_products = 0;
+                var quantity = 0;
+                var unitcost = 0;
+                var subtotal = 0;
+                var discount = 0;
                 var total = 0;
+                $('.price').each(function (i,e) {
+                    var price =$(this).val()-0;
+                    unitcost += price;
+                    total_products += 1;
+                })
+                $('.qty').each(function (i,e) {
+                    var qty =$(this).val()-0;
+                    quantity += qty;
+                })
+                $('.dis').each(function (i,e) {
+                    var dis =$(this).val()-0;
+                    discount += dis;
+                })
                 $('.amount').each(function (i,e) {
                     var amount =$(this).val()-0;
                     total += amount;
                 })
+                $('.total_products').html(total_products);
+                $('.totalProductsInput').val(total_products);
+                subtotal = unitcost * quantity;
+                $('.subtotal').html(subtotal);
+                $('.subtotalInput').val(subtotal);
+                $('.discount').html(discount);
+                $('.discountInput').val(discount);
                 $('.total').html(total);
+                $('.totalInput').val(total);
             }
 
             $('.addRow').on('click', function () {

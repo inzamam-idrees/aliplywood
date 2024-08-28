@@ -32,4 +32,5 @@ Route::resource('invoice', 'InvoiceController');
 Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
 Route::resource('purchase', 'PurchaseController');
 Route::get('/findPrice', 'InvoiceController@findPrice')->name('findPrice');
+Route::get('/orders/details/{id}/download', 'InvoiceController@downloadInvoice')->name('downloadInvoice');
 Route::get('/findPricePurchase', 'PurchaseController@findPricePurchase')->name('findPricePurchase');

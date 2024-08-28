@@ -9,7 +9,15 @@ class Purchase extends Model
     protected $fillable = [
         'supplier_id',
         'date',
-        // Add other fillable attributes here
+        'purchase_no',
+        'status',
+        'total_amount',
+    ];
+
+    protected $casts = [
+        'date'       => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
     public function supplier()
@@ -17,9 +25,14 @@ class Purchase extends Model
         return $this->belongsTo(Supplier::class);
     }
 
-    public function purchaseDetails()
+    // public function purchaseDetails()
+    // {
+    //     return $this->hasMany(PurchaseDetail::class);
+    // }
+
+    public function details()
     {
-        return $this->hasMany(PurchaseDetail::class);
+        return $this->hasMany(PurchaseDetails::class);
     }
 }
 
