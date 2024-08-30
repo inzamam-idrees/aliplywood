@@ -78,15 +78,15 @@
                                         <td><b class="total">{{$total}}</b></td>
                                     </tr> -->
                                     <tr>
-                                        <td colspan="5" class="text-end">Sub Total</td>
+                                        <td colspan="5" class="text-right">Sub Total</td>
                                         <td class="text-center">{{ number_format($invoice->sub_total, 2) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="5" class="text-end">Discount %</td>
+                                        <td colspan="5" class="text-right">Discount %</td>
                                         <td class="text-center">{{ number_format($invoice->discount, 2) }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="5" class="text-end">Total</td>
+                                        <td colspan="5" class="text-right">Total</td>
                                         <td class="text-center">{{ number_format($invoice->total, 2) }}</td>
                                     </tr>
                                     </tfoot>

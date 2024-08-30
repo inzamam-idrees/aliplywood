@@ -1,18 +1,18 @@
 @extends('layouts.master')
 
-@section('title', 'Invoice | ')
+@section('title', 'Purchase | ')
 @section('content')
     @include('partials.header')
     @include('partials.sidebar')
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-edit"></i> Add Purchase</h1>
+                <h1><i class="fa fa-edit"></i> Create Purchase</h1>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
                 <li class="breadcrumb-item">Purchase</li>
-                <li class="breadcrumb-item"><a href="#">Add Purchase</a></li>
+                <li class="breadcrumb-item"><a href="#">Create</a></li>
             </ul>
         </div>
 
@@ -23,6 +23,15 @@
                 <div class="tile">
                     <h3 class="tile-title">Purchase</h3>
                     <div class="tile-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form  method="POST" action="{{route('purchase.store')}}">
                             @csrf
                             <div class="form-group col-md-3">
@@ -61,27 +70,27 @@
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><input type="text" name="qty[]" class="form-control qty" ></td>
-                                <td><input type="text" name="price[]" class="form-control price" ></td>
-                                <!-- <td><input type="text" name="dis[]" class="form-control dis" ></td> -->
-                                <td><input type="text" name="amount[]" class="form-control amount" ></td>
+                                <td><input type="number" min="0" disabled name="qty[]" class="form-control qty" ></td>
+                                <td><input type="number" min="0" disabled name="price[]" class="form-control price" ></td>
+                                <!-- <td><input type="number" min="0" disabled name="dis[]" class="form-control dis" ></td> -->
+                                <td><input type="number" min="0" disabled name="amount[]" class="form-control amount" ></td>
                                 <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>
                              </tr>
                             </tbody>
 
                             <tfoot>
                             <tr>
-                                <td colspan="5" class="text-end"><b>Total Product</b></td>
+                                <td colspan="4" class="text-right"><b>Total Product</b></td>
                                 <td class="text-center">
                                     <b class="total_products"></b>
                                     <input type="hidden" name="total_products" class="totalProductsInput" value="">
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="5" class="text-end"><b>Total</b></td>
+                                <td colspan="4" class="text-right"><b>Total</b></td>
                                 <td class="text-center">
                                     <b class="total"></b>
-                                    <input type="hidden" name="total_amount" class="totalInput" value="">
+                                    <input type="hidden" name="total" class="totalInput" value="">
                                 </td>
                             </tr>
 
@@ -125,6 +134,9 @@
 
                 var  tr = $(this).parent().parent();
                 tr.find('.qty').focus();
+                tr.find('.qty').prop('disabled', false);
+                tr.find('.price').prop('disabled', false);
+                tr.find('.amount').prop('disabled', false);
 
             })
 
@@ -208,11 +220,11 @@
 '                                            <option value="{{$product->id}}">{{$product->name}}</option>\n' +
 '                                        @endforeach\n' +
                     '               </select></td>\n' +
-'                                <td><input type="text" name="qty[]" class="form-control qty" ></td>\n' +
-'                                <td><input type="text" name="price[]" class="form-control price" ></td>\n' +
-// '                                <td><input type="text" name="dis[]" class="form-control dis" ></td>\n' +
-'                                <td><input type="text" name="amount[]" class="form-control amount" ></td>\n' +
-'                                <td><a   class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>\n' +
+'                                <td><input type="number" min="0" disabled name="qty[]" class="form-control qty" ></td>\n' +
+'                                <td><input type="number" min="0" disabled name="price[]" class="form-control price" ></td>\n' +
+// '                                <td><input type="number" min="0" disabled name="dis[]" class="form-control dis" ></td>\n' +
+'                                <td><input type="number" min="0" disabled name="amount[]" class="form-control amount" ></td>\n' +
+'                                <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>\n' +
 '                             </tr>';
                 $('tbody').append(addRow);
             };
@@ -225,6 +237,7 @@
                 }else{
 
                     $(this).parent().parent().remove();
+                    total();
 
                 }
 

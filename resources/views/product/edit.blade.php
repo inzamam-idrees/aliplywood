@@ -12,7 +12,7 @@
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
                 <li class="breadcrumb-item">Product</li>
-                <li class="breadcrumb-item"><a href="#">Edit Product</a></li>
+                <li class="breadcrumb-item"><a href="#">Edit</a></li>
             </ul>
         </div>
 
@@ -30,8 +30,17 @@
             <div class="clearix"></div>
             <div class="col-md-12">
                 <div class="tile">
-                    <h3 class="tile-title">Edit Product Form</h3>
+                    <h3 class="tile-title">Product</h3>
                     <div class="tile-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form method="POST" action="{{route('product.update', $product->id)}}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -162,9 +171,9 @@
                                     <label class="control-label">Tax </label>
                                     <select name="tax_id" class="form-control">
                                         <option value="{{$product->tax->id}}">{{$product->tax->name}} %</option>
-                                        @foreach($taxes as $tax)
+                                        {{-- @foreach($taxes as $tax)
                                             <option value="{{$tax->id}}">{{$tax->name}} %</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                     @error('tax_id')
                                     <span class="invalid-feedback" role="alert">
@@ -179,9 +188,9 @@
                                      <div class="form-group col-md-4">
                                         <select name="supplier_id[]" class="form-control">
                                             <option value="{{$supplier_id}}">{{$product->supplier->name}} </option>
-                                            @foreach($suppliers as $supplier)
+                                            {{-- @foreach($suppliers as $supplier)
                                                 <option value="{{$product->supplier->id}}">{{$product->supplier->name}} </option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                         @error('supplier_id')
                                         <span class="invalid-feedback" role="alert">
@@ -223,7 +232,7 @@
             var maxField = 10; //Input fields increment limitation
             var addButton = $('.add_button'); //Add button selector
             var wrapper = $('.field_wrapper'); //Input field wrapper
-            var fieldHTML = '<div><select name="supplier_id[]" class="form-control"><option class="form-control">Select Supplier</option>@foreach($suppliers as $supplier)<option value="{{$supplier->id}}">{{$supplier->name}}</option>@endforeach</select><input name="supplier_price[]" class="form-control" type="text" placeholder="Enter Sales Price"><a href="javascript:void(0);" class="remove_button btn btn-danger" title="Delete field"><i class="fa fa-minus"></i></a></div>'
+            // var fieldHTML = '<div><select name="supplier_id[]" class="form-control"><option class="form-control">Select Supplier</option>{{-- @foreach($suppliers as $supplier)<option value="{{$supplier->id}}">{{$supplier->name}}</option>@endforeach --}}</select><input name="supplier_price[]" class="form-control" type="text" placeholder="Enter Sales Price"><a href="javascript:void(0);" class="remove_button btn btn-danger" title="Delete field"><i class="fa fa-minus"></i></a></div>'
             var x = 1; //Initial field counter is 1
 
             //Once add button is clicked
@@ -231,7 +240,7 @@
                 //Check maximum number of input fields
                 if(x < maxField){
                     x++; //Increment field counter
-                    $(wrapper).append(fieldHTML); //Add field html
+                    // $(wrapper).append(fieldHTML); //Add field html
                 }
             });
 

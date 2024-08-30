@@ -58,42 +58,26 @@ class Product extends Model
         return $this->belongsToMany('App\Invoice');
     }
 
-    // protected function buyingPrice(): Attribute
+    // public function getBuyingPriceAttribute($value)
     // {
-    //     return Attribute::make(
-    //         get: fn ($value) => $value / 100,
-    //         set: fn ($value) => $value * 100,
-    //     );
+    //     return $value / 100;
     // }
 
-    // protected function sellingPrice(): Attribute
+    // // Mutator for buying_price
+    // public function setBuyingPriceAttribute($value)
     // {
-    //     return Attribute::make(
-    //         get: fn ($value) => $value / 100,
-    //         set: fn ($value) => $value * 100,
-    //     );
+    //     $this->attributes['buying_price'] = $value * 100;
     // }
 
-    public function getBuyingPriceAttribute($value)
-    {
-        return $value / 100;
-    }
+    // // Accessor for selling_price
+    // public function getSellingPriceAttribute($value)
+    // {
+    //     return $value / 100;
+    // }
 
-    // Mutator for buying_price
-    public function setBuyingPriceAttribute($value)
-    {
-        $this->attributes['buying_price'] = $value * 100;
-    }
-
-    // Accessor for selling_price
-    public function getSellingPriceAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    // Mutator for selling_price
-    public function setSellingPriceAttribute($value)
-    {
-        $this->attributes['selling_price'] = $value * 100;
-    }
+    // // Mutator for selling_price
+    // public function setSellingPriceAttribute($value)
+    // {
+    //     $this->attributes['selling_price'] = $value * 100;
+    // }
 }

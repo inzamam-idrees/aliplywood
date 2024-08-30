@@ -7,12 +7,12 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-edit"></i>Supplier</h1>
+                <h1><i class="fa fa-edit"></i>Create Supplier Form</h1>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
                 <li class="breadcrumb-item">Supplier</li>
-                <li class="breadcrumb-item"><a href="#">Add Supplier</a></li>
+                <li class="breadcrumb-item"><a href="#">Create</a></li>
             </ul>
         </div>
 
@@ -71,7 +71,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-12">
+                            <!-- <div class="form-group col-md-12">
                                 <label class="control-label">Previous Credit Balance</label>
                                 <input name="previous_balance" class="form-control @error('previous_balance') is-invalid @enderror" type="text" placeholder="Enter Unit Name">
                                 @error('previous_balance')
@@ -79,7 +79,7 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>
+                            </div> -->
 
 
                             <div class="form-group col-md-4 align-self-end">

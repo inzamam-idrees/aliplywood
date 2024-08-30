@@ -7,12 +7,12 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-edit"></i> Edit Customer</h1>
+                <h1><i class="fa fa-edit"></i> Edit Customer Form</h1>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
                 <li class="breadcrumb-item">Customer</li>
-                <li class="breadcrumb-item"><a href="#">Edit Customer</a></li>
+                <li class="breadcrumb-item"><a href="#">Edit</a></li>
             </ul>
         </div>
 
@@ -26,7 +26,7 @@
             <div class="clearix"></div>
             <div class="col-md-12">
                 <div class="tile">
-                    <h3 class="tile-title">Edit Customer Form</h3>
+                    <h3 class="tile-title">Customer</h3>
                     <div class="tile-body">
                         <form class="row" method="POST" action="{{route('customer.update', $customer->id)}}">
                             @csrf
@@ -68,7 +68,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-12">
+                            <!-- <div class="form-group col-md-12">
                                 <label class="control-label">Customer Credit Balance</label>
                                 <input value="{{ $customer->previous_balance }}" name="previous_balance" class="form-control @error('previous_balance') is-invalid @enderror" type="text" placeholder="Enter Unit Name">
                                 @error('previous_balance')
@@ -76,7 +76,7 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>
+                            </div> -->
                             <div class="form-group col-md-4 align-self-end">
                                 <button class="btn btn-success" type="submit"><i class="fa fa-fw fa-lg fa-check-circle"></i>Update</button>
                             </div>

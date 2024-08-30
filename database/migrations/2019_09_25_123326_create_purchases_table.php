@@ -21,7 +21,8 @@ class CreatePurchasesTable extends Migration
             $table->tinyInteger('status')
                 ->default(0)
                 ->comment('0=Pending, 1=Approved');
-            $table->integer('total_amount');
+            $table->integer('total_products');
+            $table->integer('total');
 
             $table->foreign('supplier_id')->references('id')->on('suppliers')->nullOnDelete();
             $table->timestamps();

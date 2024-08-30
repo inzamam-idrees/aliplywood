@@ -8,13 +8,13 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-edit"></i> Password Change </h1>
+                <h1><i class="fa fa-edit"></i> Password Change Form </h1>
                 <p>Bootstrap default form components</p>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-                <li class="breadcrumb-item">Forms</li>
-                <li class="breadcrumb-item"><a href="#"> Password Change </a></li>
+                <li class="breadcrumb-item">Password</li>
+                <li class="breadcrumb-item"><a href="#"> Change </a></li>
             </ul>
         </div>
         <div  class="col-md-6 offset-md-3">

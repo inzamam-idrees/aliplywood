@@ -11,7 +11,8 @@ class Purchase extends Model
         'date',
         'purchase_no',
         'status',
-        'total_amount',
+        'total_products',
+        'total',
     ];
 
     protected $casts = [

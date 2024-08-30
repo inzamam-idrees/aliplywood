@@ -10,12 +10,12 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-th-list"></i> Invoices Table</h1>
+                <h1><i class="fa fa-th-list"></i> Invoice List</h1>
             </div>
             <ul class="app-breadcrumb breadcrumb side">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-                <li class="breadcrumb-item">Invoice</li>
-                <li class="breadcrumb-item active"><a href="#">Invoice Table</a></li>
+                <li class="breadcrumb-item">Invoices</li>
+                <li class="breadcrumb-item active"><a href="#">Manage Invoice</a></li>
             </ul>
         </div>
         <div class="">

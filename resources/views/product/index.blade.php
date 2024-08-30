@@ -10,12 +10,12 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-th-list"></i> Product Table</h1>
+                <h1><i class="fa fa-th-list"></i> Product List</h1>
             </div>
             <ul class="app-breadcrumb breadcrumb side">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
                 <li class="breadcrumb-item">Product</li>
-                <li class="breadcrumb-item active"><a href="#">Product Table</a></li>
+                <li class="breadcrumb-item active"><a href="#">Manage Product</a></li>
             </ul>
         </div>
         <div class="">
@@ -31,7 +31,7 @@
                             <tr>
                                 <th>Product </th>
                                 <!-- <th>Model </th> -->
-                                <th>Serial</th>
+                                <!-- <th>Serial</th> -->
                                 <!-- <th>Sales Price</th> -->
                                 <!-- <th>Purchase Price</th> -->
                                 <!-- <th>Supplier</th> -->
@@ -46,11 +46,11 @@
                              @foreach($products as $product)
                                  <tr>
                                      <td>{{$product->name}}</td>
-                                     <!-- <td>{{$product->model}}</td> -->
-                                     <td>{{$product->serial_number}}</td>
-                                     <!-- <td>{{$product->sales_price}}</td> -->
-                                     <!-- <td>{{$price}}</td> -->
-                                     <!-- <td>{{$supplier->name}}</td> -->
+                                     <!-- <td>{{-- $product->model --}}</td> -->
+                                     <!-- <td>{{$product->serial_number}}</td> -->
+                                     <!-- <td>{{-- $product->sales_price --}}</td> -->
+                                     <!-- <td>{{-- $price --}}</td> -->
+                                     <!-- <td>{{-- $supplier->name --}}</td> -->
                                       <td>{{ $product->category ? $product->category->name : '--' }}</td>
                                       <td>{{ $product->quantity }}</td>
                                      <td><img width="40px" src="{{ ($product->image) ? asset('images/product/'.$product->image) : 'https://demofree.sirv.com/nope-not-here.jpg' }}"></td>

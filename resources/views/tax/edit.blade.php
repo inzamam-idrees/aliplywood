@@ -7,12 +7,12 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-edit"></i> Edit Tax</h1>
+                <h1><i class="fa fa-edit"></i> Edit Tax Form</h1>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
                 <li class="breadcrumb-item">Tax</li>
-                <li class="breadcrumb-item"><a href="#">Edit Tax</a></li>
+                <li class="breadcrumb-item"><a href="#">Edit</a></li>
             </ul>
         </div>
 
@@ -26,7 +26,7 @@
             <div class="clearix"></div>
             <div class="col-md-12">
                 <div class="tile">
-                    <h3 class="tile-title">Edit Tax Form</h3>
+                    <h3 class="tile-title">Tax</h3>
                     <div class="tile-body">
                         <form class="row" method="POST" action="{{route('tax.update', $tax->id)}}">
                             @csrf

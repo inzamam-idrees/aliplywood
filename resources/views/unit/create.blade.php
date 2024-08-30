@@ -7,12 +7,12 @@
     <main class="app-content">
         <div class="app-title">
             <div>
-                <h1><i class="fa fa-edit"></i>Unit</h1>
+                <h1><i class="fa fa-edit"></i>Create Unit Form</h1>
             </div>
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
                 <li class="breadcrumb-item">Unit</li>
-                <li class="breadcrumb-item"><a href="#">Add Unit</a></li>
+                <li class="breadcrumb-item"><a href="#">Create</a></li>
             </ul>
         </div>
 
@@ -30,7 +30,7 @@
             <div class="clearix"></div>
             <div class="col-md-12">
                 <div class="tile">
-                    <h3 class="tile-title">Add Unit Form</h3>
+                    <h3 class="tile-title">Unit</h3>
                     <div class="tile-body">
                         <form method="POST" action="{{route('unit.store')}}">
                             @csrf

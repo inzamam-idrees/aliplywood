@@ -24,6 +24,15 @@
                 <div class="tile">
                     <h3 class="tile-title">Invoice</h3>
                     <div class="tile-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form  method="POST" action="{{route('invoice.update',$invoice->id)}}">
                             @csrf
                             @method('PUT')
@@ -32,7 +41,7 @@
                                 <select name="customer_id" class="form-control">
                                     <!-- <option name="customer_id" value="{{$invoice->customer->id}}">{{$invoice->customer->name}}</option> -->
                                     @foreach($customers as $customer)
-                                        <option value="{{$customer->id}}" @selected( old('customer_id') == $invoice->customer_id)>{{$customer->name}} </option>
+                                        <option value="{{$customer->id}}" @if (old('customer_id', $invoice->customer_id) == $customer->id) selected="selected" @endif>{{$customer->name}} </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -65,10 +74,10 @@
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input value="{{$sale->quantity}}" type="text" name="qty[]" class="form-control qty" ></td>
-                                    <td><input value="{{$sale->unitcost}}" type="text" name="price[]" class="form-control price" ></td>
-                                    <td><input value="{{$sale->dis}}" type="text" name="dis[]" class="form-control dis" ></td>
-                                    <td><input value="{{$sale->total}}" type="text" name="amount[]" class="form-control amount" ></td>
+                                    <td><input value="{{$sale->quantity}}" type="number" min="0" disabled name="qty[]" class="form-control qty" ></td>
+                                    <td><input value="{{$sale->unitcost}}" type="number" min="0" disabled name="price[]" class="form-control price" ></td>
+                                    <td><input value="{{$sale->dis}}" type="number" min="0" disabled name="dis[]" class="form-control dis" ></td>
+                                    <td><input value="{{$sale->total}}" type="number" min="0" disabled name="amount[]" class="form-control amount" ></td>
                                     <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>
                                 </tr>
                                 @endforeach
@@ -84,28 +93,28 @@
                                 </tr> -->
 
                                 <tr>
-                                    <td colspan="5" class="text-end"><b>Total Product</b></td>
+                                    <td colspan="5" class="text-right"><b>Total Product</b></td>
                                     <td class="text-center">
                                         <b class="total_products"></b>
                                         <input type="hidden" name="total_products" class="totalProductsInput" value="{{ $invoice->total_products }}">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5" class="text-end"><b>Sub Total</b></td>
+                                    <td colspan="5" class="text-right"><b>Sub Total</b></td>
                                     <td class="text-center">
                                         <b class="subtotal"></b>
                                         <input type="hidden" name="sub_total" class="subtotalInput" value="{{ $invoice->sub_total }}">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5" class="text-end"><b>Discount %</b></td>
+                                    <td colspan="5" class="text-right"><b>Discount %</b></td>
                                     <td class="text-center">
                                         <b class="discount"></b>
                                         <input type="hidden" name="discount" class="discountInput" value="{{ $invoice->discount }}">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5" class="text-end"><b>Total</b></td>
+                                    <td colspan="5" class="text-right"><b>Total</b></td>
                                     <td class="text-center">
                                         <b class="total"></b>
                                         <input type="hidden" name="total" class="totalInput" value="{{ $invoice->total }}">
@@ -151,6 +160,10 @@
 
                 var  tr = $(this).parent().parent();
                 tr.find('.qty').focus();
+                tr.find('.qty').prop('disabled', false);
+                tr.find('.price').prop('disabled', false);
+                tr.find('.dis').prop('disabled', false);
+                tr.find('.amount').prop('disabled', false);
 
             })
 
@@ -230,11 +243,11 @@
                     '                                            <option value="{{$product->id}}">{{$product->name}}</option>\n' +
                     '                                        @endforeach\n' +
                     '               </select></td>\n' +
-                    '                                <td><input type="text" name="qty[]" class="form-control qty" ></td>\n' +
-                    '                                <td><input type="text" name="price[]" class="form-control price" ></td>\n' +
-                    '                                <td><input type="text" name="dis[]" class="form-control dis" ></td>\n' +
-                    '                                <td><input type="text" name="amount[]" class="form-control amount" ></td>\n' +
-                    '                                <td><a   class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>\n' +
+                    '                                <td><input type="number" min="0" disabled name="qty[]" class="form-control qty" ></td>\n' +
+                    '                                <td><input type="number" min="0" disabled name="price[]" class="form-control price" ></td>\n' +
+                    '                                <td><input type="number" min="0" disabled name="dis[]" class="form-control dis" ></td>\n' +
+                    '                                <td><input type="number" min="0" disabled name="amount[]" class="form-control amount" ></td>\n' +
+                    '                                <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>\n' +
                     '                             </tr>';
                 $('tbody').append(addRow);
             };
@@ -247,6 +260,7 @@
                 }else{
 
                     $(this).parent().parent().remove();
+                    total();
 
                 }
 
