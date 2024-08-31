@@ -15,20 +15,22 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            // $table->bigInteger('invoice_id')->unsigned();
+            $table->bigInteger('customer_id')->unsigned();
             $table->string('order_date');
             $table->tinyInteger('order_status')
                 ->comment('0 - Pending / 1 - Complete');
-            $table->integer('total_products');
-            $table->integer('sub_total');
-            $table->integer('discount');
+            $table->integer('total_products')->default(0);
+            $table->integer('sub_total')->nullable();
+            $table->integer('discount')->nullable();
             $table->integer('total');
             $table->string('invoice_no');
+            $table->string('employee')->nullable();
+            $table->string('bill_no')->nullable();
             $table->string('payment_type')->nullable();
             $table->integer('pay')->nullable();
             $table->integer('due')->nullable();
 
-            // $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->nullOnDelete();
             $table->timestamps();
         });
     }

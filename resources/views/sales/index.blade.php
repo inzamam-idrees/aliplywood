@@ -30,24 +30,24 @@
                             <thead>
                             <tr>
                                 <th>Product </th>
-                                <th>Qty </th>
+                                <th>Quantity </th>
                                 <th>Price</th>
                                 <th>Total</th>
                                 <th>Date </th>
                             </tr>
                             </thead>
                             <tbody>
-            @foreach($sales as $sale)
-                <tr>
-                    <td>{{ $sale->product->name }}</td>
-                    <td>{{ $sale->qty }}</td>
-                    <td>{{ $sale->price }}</td>
-                    <td>{{ $sale->amount }}</td>
-                    <td>{{ $sale->created_at }}</td>
-                    
-                </tr>
-            @endforeach
-        </tbody>
+                                @foreach($sales as $sale)
+                                    <tr>
+                                        <td>{{ $sale->product->name }}</td>
+                                        <td>{{ $sale->quantity }}</td>
+                                        <td>{{ $sale->unitcost }}</td>
+                                        <td>{{ $sale->total }}</td>
+                                        <td>{{ $sale->created_at->format('Y-m-d') }}</td>
+                                        
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 </div>

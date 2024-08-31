@@ -43,7 +43,6 @@
                                      <!-- <td>{{1000+$invoice->id}}</td> -->
                                      <td>{{$invoice->invoice_no}}</td>
                                      <td>{{$invoice->customer->name}}</td>
-                                     <!-- <td>{{$invoice->created_at->format('Y-m-d')}}</td> -->
                                      <td>{{$invoice->order_date->format('Y-m-d')}}</td>
                                      <td>{{$invoice->total}}</td>
                                      <td>

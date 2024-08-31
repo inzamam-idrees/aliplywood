@@ -16,6 +16,11 @@
             </ul>
         </div>
 
+        @if(session()->has('message'))
+            <div class="alert alert-success">
+                {{ session()->get('message') }}
+            </div>
+        @endif
 
         <div class="row">
             <div class="clearix"></div>
@@ -37,7 +42,7 @@
                             @method('PUT')
                             <div class="form-group col-md-3">
                                 <label class="control-label">Supplier</label>
-                                <select name="supplier_id" class="form-control">
+                                <select name="supplier_id" class="form-control select2" style="width: 100%">
                                     <option selected disabled>Select Supplier</option>
                                     @foreach($suppliers as $supplier)
                                         <option value="{{$supplier->id}}" @if (old('supplier_id', $purchase->supplier_id) == $supplier->id) selected="selected" @endif>{{$supplier->name}} </option>
@@ -46,7 +51,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="control-label">Purchase Date</label>
-                                <input name="date" class="form-control datepicker @error('date') is-invalid @enderror" value="<?php echo old('date', date($purchase->date)); ?>" type="date" placeholder="Date">
+                                <input name="date" class="form-control datepicker @error('date') is-invalid @enderror" value="{{ \Carbon\Carbon::parse($purchase->date)->format('Y-m-d') }}" type="date" placeholder="Date">
                             </div>
 
 
@@ -58,23 +63,23 @@
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Unit Price</th>
                                     <th scope="col">Total</th>
-                                    <th scope="col"><a class="addRow"><i class="fa fa-plus"></i></a></th>
+                                    <th scope="col"><a class="addRow badge badge-success text-white"><i class="fa fa-plus"></i> Add Row</a></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($sales as $sale)
+                                @foreach($details as $sale)
                                  <tr>
                                     <td>
-                                        <select name="product_id[]" class="form-control productname" >
+                                        <select name="product_id[]" class="form-control productname select2" style="width: 100%">
                                             <!-- <option value="{{$sale->product->id}}">{{$sale->product->name}}</option> -->
                                             @foreach($products as $product)
                                                 <option value="{{$product->id}}" @if($product->id == $sale->product_id) selected="selected" @endif>{{$product->name}}</option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input value="{{$sale->quantity}}" type="number" min="0" disabled name="qty[]" class="form-control qty" ></td>
-                                    <td><input value="{{$sale->unitcost}}" type="number" min="0" disabled name="price[]" class="form-control price" ></td>
-                                    <td><input value="{{$sale->total}}" type="number" min="0" disabled name="amount[]" class="form-control amount" ></td>
+                                    <td><input value="{{$sale->quantity}}" type="number" min="0" name="qty[]" class="form-control qty" ></td>
+                                    <td><input value="{{$sale->unitcost}}" type="number" min="0" name="price[]" class="form-control price" ></td>
+                                    <td><input value="{{$sale->total}}" type="number" min="0" name="amount[]" class="form-control amount" ></td>
                                     <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>
                                 </tr>
                                 @endforeach
@@ -83,15 +88,15 @@
                                 <tr>
                                     <td colspan="4" class="text-right"><b>Total Product</b></td>
                                     <td class="text-center">
-                                        <b class="total_products"></b>
+                                        <b class="total_products">{{ $purchase->total_products }}</b>
                                         <input type="hidden" name="total_products" class="totalProductsInput" value="{{ $purchase->total_products }}">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="4" class="text-right"><b>Total</b></td>
                                     <td class="text-center">
-                                        <b class="total"></b>
-                                        <input type="hidden" name="total_amount" class="totalInput" value="{{ $purchase->total }}">
+                                        <b class="total">{{ $purchase->total }}</b>
+                                        <input type="hidden" name="total" class="totalInput" value="{{ $purchase->total }}">
                                     </td>
                                 </tr>
 
@@ -100,7 +105,7 @@
                             </table>
 
                             <div >
-                                <button class="btn btn-primary" type="submit">Submit</button>
+                                <button class="btn btn-primary" type="submit">Update</button>
                             </div>
                         </form>
                     </div>
@@ -121,7 +126,8 @@
 @endsection
 @push('js')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-    <script src="{{asset('/')}}js/multifield/jquery.multifield.min.js"></script>
+    <script src="{{ asset('/js/multifield/jquery.multifield.min.js') }}"></script>
+    <script src="{{ asset('/js/plugins/select2.min.js') }}"></script>
 
 
 
@@ -129,7 +135,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
 
-
+            $('.select2').select2();
 
             $('tbody').delegate('.productname', 'change', function () {
 
@@ -196,7 +202,7 @@
 
             function addRow() {
                 var addRow = '<tr>\n' +
-                    '         <td><select name="product_id[]" class="form-control productname " >\n' +
+                    '         <td><select name="product_id[]" class="form-control productname select2" style="width: 100%">\n' +
                     '         <option value="0" selected="true" disabled="true">Select Product</option>\n' +
                     '                                        @foreach($products as $product)\n' +
                     '                                            <option value="{{$product->id}}">{{$product->name}}</option>\n' +
@@ -209,6 +215,7 @@
                     '                                <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>\n' +
                     '                             </tr>';
                 $('tbody').append(addRow);
+                $('.select2').select2();
             };
 
 

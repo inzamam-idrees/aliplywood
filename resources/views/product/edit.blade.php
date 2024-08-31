@@ -55,9 +55,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="control-label">Serial Number <span class="text-danger">*</span></label>
-                                    <input value="{{ old('serial_number', $product->serial_number) }}" name="serial_number" class="form-control @error('serial_number') is-invalid @enderror" type="number" placeholder="Enter Tax Name">
-                                    @error('serial_number')
+                                    <label class="control-label">Code <span class="text-danger">*</span></label>
+                                    <input value="{{ old('code', $product->code) }}" name="code" class="form-control @error('code') is-invalid @enderror" type="text" placeholder="Product Code">
+                                    @error('code')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -127,7 +127,7 @@
 
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Quantity <span class="text-danger">*</span></label>
-                                    <input value="{{ old('quantity', $product->quantity) }}" name="quantity" class="form-control @error('quantity') is-invalid @enderror" type="number" placeholder="Enter Quantity">
+                                    <input value="{{ old('quantity', $product->quantity) }}" name="quantity" class="form-control @error('quantity') is-invalid @enderror" type="number" placeholder="Enter Quantity" disabled>
                                     @error('quantity')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -170,7 +170,7 @@
                                 <!-- <div class="form-group col-md-6">
                                     <label class="control-label">Tax </label>
                                     <select name="tax_id" class="form-control">
-                                        <option value="{{$product->tax->id}}">{{$product->tax->name}} %</option>
+                                        <option value="{{-- $product->tax->id --}}">{{-- $product->tax->name --}} %</option>
                                         {{-- @foreach($taxes as $tax)
                                             <option value="{{$tax->id}}">{{$tax->name}} %</option>
                                         @endforeach --}}
@@ -187,7 +187,7 @@
                                 <div class="row field_wrapper">
                                      <div class="form-group col-md-4">
                                         <select name="supplier_id[]" class="form-control">
-                                            <option value="{{$supplier_id}}">{{$product->supplier->name}} </option>
+                                            <option value="{{-- $supplier_id --}}">{{-- $product->supplier->name --}} </option>
                                             {{-- @foreach($suppliers as $supplier)
                                                 <option value="{{$product->supplier->id}}">{{$product->supplier->name}} </option>
                                             @endforeach --}}
@@ -199,7 +199,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <input value="{{$price}}"  name="supplier_price[]" class="form-control @error('supplier_price') is-invalid @enderror" type="number" placeholder="Enter Sales Price">
+                                        <input value="{{-- $price --}}" name="supplier_price[]" class="form-control @error('supplier_price') is-invalid @enderror" type="number" placeholder="Enter Sales Price">
                                         @error('supplier_price')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

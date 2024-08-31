@@ -45,7 +45,7 @@
                             @csrf
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label class="control-label">Product <span class="text-danger">*</span></label>
+                                    <label class="control-label">Product Name <span class="text-danger">*</span></label>
                                     <input name="name" class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Product Name" value="{{ old('name') }}">
                                     @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -54,9 +54,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="control-label">Serial Number <span class="text-danger">*</span></label>
-                                    <input name="serial_number" class="form-control @error('serial_number') is-invalid @enderror" type="number" placeholder="Enter Serial Number" value="{{ old('serial_number') }}">
-                                    @error('serial_number')
+                                    <label class="control-label">Code <span class="text-danger">*</span></label>
+                                    <input name="code" class="form-control @error('code') is-invalid @enderror" type="text" placeholder="Product Code" value="{{ old('code') }}">
+                                    @error('code')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -157,7 +157,7 @@
 
                                 <div class="form-group col-md-12">
                                     <label class="control-label">Notes</label>
-                                    <textarea name="notes" id="notes" rows="4" class="form-control @error('notes') is-invalid @enderror"></textarea>
+                                    <textarea name="notes" id="notes" rows="4" class="form-control @error('notes') is-invalid @enderror">{{ old('notes') }}</textarea>
                                     @error('notes')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

@@ -20,10 +20,10 @@
     </div>
     <div class="col-md-6 col-lg-3">
         <div class="widget-small info coloured-icon">
-            <i class="icon fa fa-shopping-cart fa-3x"></i>
+            <i class="icon fa fa-th fa-3x"></i>
             <div class="info">
-                <h4>Sales</h4>
-                <p><b>{{ $totalSales }}</b></p>
+                <h4>Categories</h4>
+                <p><b>{{ $totalCategories }}</b></p>
             </div>
         </div>
     </div>
@@ -38,10 +38,46 @@
     </div>
     <div class="col-md-6 col-lg-3">
         <div class="widget-small danger coloured-icon">
+            <i class="icon fa fa-users fa-3x"></i>
+            <div class="info">
+                <h4>Customers</h4>
+                <p><b>{{ $totalCustomers }}</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small danger coloured-icon">
+            <i class="icon fa fa-shopping-cart fa-3x"></i>
+            <div class="info">
+                <h4>Sales</h4>
+                <p><b>{{ $totalSales }}</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small warning coloured-icon">
             <i class="icon fa fa-file fa-3x"></i>
             <div class="info">
                 <h4>Invoices</h4>
                 <p><b>{{ $totalInvoices }}</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small info coloured-icon">
+            <i class="icon fa fa-exchange fa-3x"></i>
+            <div class="info">
+                <h4>Purchases</h4>
+                <p><b>{{ $totalPurchases }}</b></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="widget-small primary coloured-icon">
+            <i class="icon fa fa-dollar fa-3x"></i>
+            <div class="info">
+                <h4>Income</h4>
+                <p><b>{{ number_format($totalSalesPrice, 2) }}</b></p>
             </div>
         </div>
     </div>

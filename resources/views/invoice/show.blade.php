@@ -30,13 +30,13 @@
                         </div>
                         <div class="row invoice-info">
                             <div class="col-4">From
-                                <address><strong>Ali Plywood</strong><br>Address<br>aliplywood.com</address>
+                                <address><strong>Ali Plywood & Hardware Store</strong><br>Address<br><strong>Raja Road Sialkot</strong><br>Phone<br><strong>0305-4261666</strong><br>Email<br><strong>admin@aliplywood.com</strong></address>
                             </div>
                             <div class="col-4">To
-                                 <address><strong>{{$invoice->customer->name}}</strong><br>{{$invoice->customer->address}}<br>Phone: {{$invoice->customer->mobile}}<br>Email: {{$invoice->customer->email}}</address>
+                                 <address><strong>{{$invoice->customer->name}}</strong><br>Address<br><strong>{{$invoice->customer->address ?? 'N/A'}}</strong><br>Phone<br><strong>{{$invoice->customer->mobile ?? 'N/A'}}</strong><br>Email<br><strong>{{$invoice->customer->email ?? 'N/A'}}</strong></address>
                              </div>
                             <!-- <div class="col-4"><b>Invoice #{{1000+$invoice->id}}</b><br><br><b>Order ID:</b> 4F3S8J<br><b>Payment Due:</b> {{$invoice->created_at->format('Y-m-d')}}<br><b>Account:</b> 000-12345</div> -->
-                            <div class="col-4"><b>Invoice #{{$invoice->invoice_no}}</b><br><br><b>Order ID:</b> {{$invoice->id}}<br><b>Payment Type:</b> {{$invoice->payment_type}}</div>
+                            <div class="col-4"><b>Invoice #{{$invoice->invoice_no}}</b><br><br><b>Order ID:</b> {{$invoice->id}}<br><br><b>Payment Type:</b> {{$invoice->payment_type}}</div>
                         </div>
                         <div class="row">
                             <div class="col-12 table-responsive">
@@ -47,7 +47,7 @@
                                         <th>Product</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
-                                        <th>Discount %</th>
+                                        <!-- <th>Discount %</th> -->
                                         <th>Amount</th>
                                      </tr>
                                     </thead>
@@ -59,35 +59,29 @@
                                     <tr>
                                         <td>{{ ($index + 1) }}</td>
                                         <td>{{$sale->product->name}}</td>
-                                        <td>{{$sale->qty}}</td>
-                                        <td>{{$sale->price}}</td>
-                                        <td>{{$sale->dis}}%</td>
-                                        <td>{{$sale->amount}}</td>
+                                        <td>{{$sale->quantity}}</td>
+                                        <td>{{$sale->unitcost}}</td>
+                                        <!-- <td>{{$sale->dis}}%</td> -->
+                                        <td>{{$sale->total}}</td>
                                         <div style="display: none">
-                                            {{$total +=$sale->amount}}
+                                            {{$total +=$sale->unitcost}}
                                         </div>
                                      </tr>
                                     @endforeach
                                     </tbody>
                                     <tfoot>
+                                    <tr><td colspan="5"></td></tr>
                                     <!-- <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td><b>Total</b></td>
-                                        <td><b class="total">{{$total}}</b></td>
+                                        <td colspan="4" class="text-right"><b>Sub Total</b></td>
+                                        <td class="text-center"><b>{{ number_format($invoice->sub_total, 2) }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-right"><b>Discount %</b></td>
+                                        <td class="text-center"><b>{{ number_format($invoice->discount, 2) }}</b></td>
                                     </tr> -->
                                     <tr>
-                                        <td colspan="5" class="text-right">Sub Total</td>
-                                        <td class="text-center">{{ number_format($invoice->sub_total, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5" class="text-right">Discount %</td>
-                                        <td class="text-center">{{ number_format($invoice->discount, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="5" class="text-right">Total</td>
-                                        <td class="text-center">{{ number_format($invoice->total, 2) }}</td>
+                                        <td colspan="4" class="text-right"><b>Total</b></td>
+                                        <td class="text-center"><b>{{ number_format($invoice->total, 2) }}</b></td>
                                     </tr>
                                     </tfoot>
                                 </table>

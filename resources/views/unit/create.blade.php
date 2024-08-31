@@ -36,7 +36,7 @@
                             @csrf
                             <div class="form-group col-md-12">
                                 <label class="control-label">Unit Name</label>
-                                <input name="name" class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Enter Unit Name">
+                                <input value="{{ old('name') }}" name="name" class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Enter Unit Name">
                                 @error('name')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

@@ -9,7 +9,7 @@ use App\Sale;
 use App\Supplier;
 use App\Category;
 use App\Invoice;
-use App\PurchaseDetail;
+use App\PurchaseDetails;
 use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
@@ -33,8 +33,8 @@ class PurchaseController extends Controller
 
     public function index()
     {
-        $purchase = Purchase::all();
-        return view('purchase.index', compact('purchase'));
+        $purchases = Purchase::all();
+        return view('purchase.index', compact('purchases'));
     }
 
     /**
@@ -45,9 +45,10 @@ class PurchaseController extends Controller
     public function create()
     {
         $suppliers = Supplier::select(['id', 'name'])->get();
-        $categories = Category::select(['id', 'name'])->get();
+        // $categories = Category::select(['id', 'name'])->get();
         $products = Product::all();
-        return view('purchase.create', compact('suppliers','categories','products'));
+        // return view('purchase.create', compact('suppliers','categories','products'));
+        return view('purchase.create', compact('suppliers','products'));
     }
 
     /**
@@ -60,16 +61,14 @@ class PurchaseController extends Controller
     {
         // Validation rules
         $request->validate([
-            // 'supplier_id' => 'required|exists:suppliers,id',
-            // 'date' => 'required|date',
-            // 'product_id.*' => 'required|exists:products,id',
-            // 'qty.*' => 'required|numeric|min:1',
-            // 'price.*' => 'required|numeric|min:0',
-            // 'dis.*' => 'required|numeric|min:0|max:100',
-            // 'amount.*' => 'required|numeric|min:0',
-            'supplier_id'   => 'required',
-            'date'          => 'required|string',
-            'total_amount'  => 'required|numeric',
+            'supplier_id'   => 'required|exists:suppliers,id',
+            'date'          => 'required|date',
+            'total'         => 'required|numeric',
+            'product_id.*'  => 'required|exists:products,id',
+            'qty.*'         => 'required|numeric|min:1',
+            'price.*'       => 'required|numeric|min:0',
+            // 'dis.*'         => 'required|numeric|min:0|max:100',
+            'amount.*'      => 'required|numeric|min:0',
         ]);
 
         // Create a new purchase
@@ -81,8 +80,9 @@ class PurchaseController extends Controller
             'length' => 10,
             'prefix' => 'PRS-'
         ]);
-        $purchase->date = $request->date;
-        $purchase->total_amount = $request->total_amount;
+        $purchase->date = Carbon::parse($request->date)->format('Y-m-d');;
+        $purchase->total = $request->total;
+        $purchase->total_products = $request->total_products;
         $purchase->status = 1;
 
         // Save the purchase
@@ -111,6 +111,12 @@ class PurchaseController extends Controller
             $pDetails['created_at']     = Carbon::now();
 
             $purchase->details()->insert($pDetails);
+        }
+
+        foreach ($purchase->details as $detail) {
+            $product = $detail->product;
+            $product->quantity += $detail->quantity; // Increase stock
+            $product->save();
         }
 
         // if (! $request->invoiceProducts == null)
@@ -160,9 +166,12 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        $invoice = Invoice::findOrFail($id);
-        $sales = Sale::where('invoice_id', $id)->get();
-        return view('invoice.show', compact('invoice','sales'));
+        // $invoice = Invoice::findOrFail($id);
+        // $sales = Sale::where('invoice_id', $id)->get();
+        // return view('invoice.show', compact('invoice','sales'));
+
+        // $purchase = Purchase::with(['details'])->findOrFail($id);
+        // return view('purchase.show', compact('purchase'));
 
     }
 
@@ -174,11 +183,17 @@ class PurchaseController extends Controller
      */
     public function edit($id)
     {
-        $customers = Customer::all();
-        $products = Product::orderBy('id', 'DESC')->get();
-        $invoice = Invoice::findOrFail($id);
-        $sales = Sale::where('invoice_id', $id)->get();
-        return view('invoice.edit', compact('customers','products','invoice','sales'));
+        // $customers = Customer::all();
+        // $products = Product::orderBy('id', 'DESC')->get();
+        // $invoice = Invoice::findOrFail($id);
+        // $sales = Sale::where('invoice_id', $id)->get();
+        // return view('invoice.edit', compact('customers','products','invoice','sales'));
+
+        $suppliers = Supplier::select(['id', 'name'])->get();
+        $products = Product::all();
+        $purchase = Purchase::findOrFail($id);
+        $details = PurchaseDetails::where('purchase_id', $id)->get();
+        return view('purchase.edit', compact('suppliers','products','purchase','details'));
     }
 
     /**
@@ -192,35 +207,46 @@ class PurchaseController extends Controller
     {
         $request->validate([
 
-            'customer_id' => 'required',
-            'product_id' => 'required',
-            'qty' => 'required',
-            'price' => 'required',
-            'dis' => 'required',
-            'amount' => 'required',
+            'supplier_id'   => 'required|exists:suppliers,id',
+            'date'          => 'required|date',
+            'total'         => 'required|numeric',
+            'product_id.*'  => 'required|exists:products,id',
+            'qty.*'         => 'required|numeric|min:1',
+            'price.*'       => 'required|numeric|min:0',
+            // 'dis.*'         => 'required|numeric|min:0|max:100',
+            'amount.*'      => 'required|numeric|min:0',
         ]);
 
-        $invoice = Invoice::findOrFail($id);
-        $invoice->customer_id = $request->customer_id;
-        $invoice->total = 1000;
-        $invoice->save();
+        $purchase = Purchase::findOrFail($id);
+        $purchase->supplier_id = $request->supplier_id;
+        $purchase->date = Carbon::parse($request->date)->format('Y-m-d');;
+        $purchase->total = $request->total;
+        $purchase->total_products = $request->total_products;
+        $purchase->save();
 
-        Sale::where('invoice_id', $id)->delete();
+        foreach ($purchase->details as $detail) {
+            $product = $detail->product;
+            $product->quantity -= $detail->quantity;
+            $product->save();
+        }
+        PurchaseDetails::where('purchase_id', $id)->delete();
 
         foreach ( $request->product_id as $key => $product_id){
-            $sale = new Sale();
-            $sale->qty = $request->qty[$key];
-            $sale->price = $request->price[$key];
-            $sale->dis = $request->dis[$key];
-            $sale->amount = $request->amount[$key];
+            $sale = new PurchaseDetails();
+            $sale->quantity = $request->qty[$key];
+            $sale->unitcost = $request->price[$key];
+            // $sale->dis = $request->dis[$key];
+            $sale->total = $request->amount[$key];
             $sale->product_id = $request->product_id[$key];
-            $sale->invoice_id = $invoice->id;
+            $sale->purchase_id = $purchase->id;
             $sale->save();
 
-
+            $product = $sale->product;
+            $product->quantity += $sale->quantity;
+            $product->save();
         }
 
-        return redirect('invoice/'.$invoice->id)->with('message','created Successfully');
+        return redirect('purchase/'.$purchase->id.'/edit')->with('message','Purchase has been updated!');
 
 
     }
@@ -234,9 +260,18 @@ class PurchaseController extends Controller
 
     public function destroy($id)
     {
-        $invoice = Invoice::findOrFail($id);
-        $invoice->delete();
-        return redirect()->back();
+        // $invoice = Invoice::findOrFail($id);
+        // $invoice->delete();
+        // return redirect()->back();
+        $purchase = Purchase::findOrFail($id);
+        foreach ($purchase->details as $detail) {
+            $product = $detail->product;
+            $product->quantity -= $detail->quantity;
+            $product->save();
+        }
+        PurchaseDetails::where('purchase_id', $id)->delete();
+        $purchase->delete();
+        return redirect()->back()->with('message', 'Purchase has been deleted!');
 
     }
 }

@@ -36,10 +36,10 @@
                             @csrf
                             <div class="form-group col-md-3">
                                 <label class="control-label">Supplier</label>
-                                <select name="supplier_id" class="form-control">
+                                <select name="supplier_id" class="form-control select2" style="width: 100%">
                                     <option selected disabled>Select Supplier</option>
                                     @foreach($suppliers as $supplier)
-                                        <option value="{{$supplier->id}}">{{$supplier->name}} </option>
+                                        <option value="{{$supplier->id}}" @if(old('supplier_id') == $supplier->id) selected="selected" @endif>{{$supplier->name}} </option>
                                     @endforeach
                                 </select>
                            </div>
@@ -57,13 +57,13 @@
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Unit Price</th>
                                 <th scope="col">Total</th>
-                                <th scope="col"><a class="addRow"><i class="fa fa-plus"></i></a></th>
+                                <th scope="col"><a class="addRow badge badge-success text-white"><i class="fa fa-plus"></i> Add Row</a></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <td>
-                                    <select name="product_id[]" class="form-control productname" >
+                                    <select name="product_id[]" class="form-control productname select2" style="width: 100%">
                                         <option value="0" selected disabled>Select Product</option>
                                         @foreach($products as $product)
                                             <option value="{{$product->id}}">{{$product->name}}</option>
@@ -82,15 +82,15 @@
                             <tr>
                                 <td colspan="4" class="text-right"><b>Total Product</b></td>
                                 <td class="text-center">
-                                    <b class="total_products"></b>
-                                    <input type="hidden" name="total_products" class="totalProductsInput" value="">
+                                    <b class="total_products">{{ old('total_products') }}</b>
+                                    <input type="hidden" name="total_products" class="totalProductsInput" value="{{ old('total_products') }}">
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-right"><b>Total</b></td>
                                 <td class="text-center">
-                                    <b class="total"></b>
-                                    <input type="hidden" name="total" class="totalInput" value="">
+                                    <b class="total">{{ old('total') }}</b>
+                                    <input type="hidden" name="total" class="totalInput" value="{{ old('total') }}">
                                 </td>
                             </tr>
 
@@ -120,7 +120,8 @@
 @endsection
 @push('js')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-     <script src="{{asset('/')}}js/multifield/jquery.multifield.min.js"></script>
+    <script src="{{ asset('/js/multifield/jquery.multifield.min.js') }}"></script>
+    <script src="{{ asset('/js/plugins/select2.min.js') }}"></script>
 
 
 
@@ -128,7 +129,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
 
-
+            $('.select2').select2();
 
             $('tbody').delegate('.productname', 'change', function () {
 
@@ -214,7 +215,7 @@
 
             function addRow() {
                 var addRow = '<tr>\n' +
-                    '         <td><select name="product_id[]" class="form-control productname " >\n' +
+                    '         <td><select name="product_id[]" class="form-control productname select2" style="width: 100%" >\n' +
                     '         <option value="0" selected="true" disabled="true">Select Product</option>\n' +
 '                                        @foreach($products as $product)\n' +
 '                                            <option value="{{$product->id}}">{{$product->name}}</option>\n' +
@@ -227,6 +228,7 @@
 '                                <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>\n' +
 '                             </tr>';
                 $('tbody').append(addRow);
+                $('.select2').select2();
             };
 
 

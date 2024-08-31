@@ -47,7 +47,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             // 'name' => 'required|min:3|unique:categories|regex:/^[a-zA-Z ]+$/',
-            'name' => 'required|min:3|unique:categories',
+            'name' => 'required|min:3|unique:categories,name',
         ]);
 
         $category = new Category();
@@ -94,7 +94,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             // 'name' => 'required|min:3|regex:/^[a-zA-Z ]+$/',
-            'name' => 'required|min:3',
+            'name' => 'required|min:3|unique:categories,name,'.$id,
         ]);
 
         $category = Category::findOrFail($id);

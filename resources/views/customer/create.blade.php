@@ -36,7 +36,7 @@
                             @csrf
                             <div class="form-group col-md-12">
                                 <label class="control-label">Customer Name</label>
-                                <input name="name" class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Enter Customer's Name">
+                                <input value="{{ old('name') }}" name="name" class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Enter Customer's Name">
                                 @error('name')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -45,7 +45,7 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label class="control-label">Contact</label>
-                                <input name="mobile" class="form-control @error('mobile') is-invalid @enderror" type="text" placeholder="Enter Contact Number">
+                                <input value="{{ old('mobile') }}" name="mobile" class="form-control @error('mobile') is-invalid @enderror" type="text" placeholder="Enter Contact Number">
                                 @error('mobile')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -54,7 +54,7 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label class="control-label">Address</label>
-                                <textarea name="address" class="form-control @error('address') is-invalid @enderror"></textarea>
+                                <textarea name="address" class="form-control @error('address') is-invalid @enderror">{{ old('address') }}</textarea>
                                 @error('address')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -63,7 +63,7 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label class="control-label">Email</label>
-                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror">
+                                <input value="{{ old('email') }}" type="email" name="email" class="form-control @error('email') is-invalid @enderror">
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -72,7 +72,7 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label class="control-label">Details</label>
-                                <textarea name="details" class="form-control @error('details') is-invalid @enderror"></textarea>
+                                <textarea name="details" class="form-control @error('details') is-invalid @enderror">{{ old('details') }}</textarea>
                                 @error('details')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

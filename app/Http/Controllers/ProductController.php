@@ -57,9 +57,9 @@ class ProductController extends Controller
             // 'name' => 'required|min:3|unique:products|regex:/^[a-zA-Z ]+$/',
             // 'sales_price' => 'required',
             // 'tax_id' => 'required',
-            'name' => 'required|min:3|unique:products',
-            'serial_number' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name'              => 'required|min:3|unique:products',
+            'code'              => 'required',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'category_id'       => 'required|integer',
             'unit_id'           => 'required|integer',
             'quantity'          => 'required|integer',
@@ -74,7 +74,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $request->name;
         $product->slug = Str::slug($request->name, '-');
-        $product->serial_number = $request->serial_number;
+        $product->code = $request->code;
         $product->quantity = $request->quantity;
         $product->quantity_alert = $request->quantity_alert;
         $product->category_id = $request->category_id;
@@ -197,11 +197,11 @@ class ProductController extends Controller
         $request->validate([
             // 'name' => 'required|min:3|unique:products,name,' . $id . '|regex:/^[a-zA-Z ]+$/',
             'name'              => 'required|min:3|unique:products,name,' . $id . '',
-            'serial_number'     => 'required',
+            'code'              => 'required',
             'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'category_id'       => 'required|integer',
             'unit_id'           => 'required|integer',
-            'quantity'          => 'required|integer',
+            // 'quantity'          => 'required|integer',
             'buying_price'      => 'required|integer',
             'selling_price'     => 'required|integer',
             'quantity_alert'    => 'required|integer',
@@ -216,10 +216,10 @@ class ProductController extends Controller
 
         $product->name = $request->name;
         $product->slug = Str::slug($request->name, '-');
-        $product->serial_number = $request->serial_number;
+        $product->code = $request->code;
         $product->category_id = $request->category_id;
         $product->unit_id = $request->unit_id;
-        $product->quantity = $request->quantity;
+        // $product->quantity = $request->quantity;
         $product->buying_price = $request->buying_price;
         $product->selling_price = $request->selling_price;
         $product->quantity_alert = $request->quantity_alert;

@@ -31,9 +31,9 @@
                             <tr>
                                 <th>Product </th>
                                 <!-- <th>Model </th> -->
-                                <!-- <th>Serial</th> -->
-                                <!-- <th>Sales Price</th> -->
-                                <!-- <th>Purchase Price</th> -->
+                                <th>Code</th>
+                                <th>Sale Price</th>
+                                <th>Purchase Price</th>
                                 <!-- <th>Supplier</th> -->
                                 <th>Category</th>
                                 <th>Quantity</th>
@@ -47,9 +47,9 @@
                                  <tr>
                                      <td>{{$product->name}}</td>
                                      <!-- <td>{{-- $product->model --}}</td> -->
-                                     <!-- <td>{{$product->serial_number}}</td> -->
-                                     <!-- <td>{{-- $product->sales_price --}}</td> -->
-                                     <!-- <td>{{-- $price --}}</td> -->
+                                     <td>{{$product->code}}</td>
+                                     <td>{{$product->selling_price}}</td>
+                                     <td>{{$product->buying_price}}</td>
                                      <!-- <td>{{-- $supplier->name --}}</td> -->
                                       <td>{{ $product->category ? $product->category->name : '--' }}</td>
                                       <td>{{ $product->quantity }}</td>

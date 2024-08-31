@@ -41,8 +41,8 @@ class SupplierController extends Controller
         $request->validate([
             // 'name' => 'required|min:3|unique:suppliers|regex:/^[a-zA-Z ]+$/',
             'name' => 'required|min:3|max:50',
-            'email' => 'nullable|email|max:50|unique:suppliers',
-            'mobile' => 'nullable|min:3|digits:11',
+            'email' => 'nullable|email|max:50|unique:suppliers,email',
+            'mobile' => 'nullable|min:3|digits:11|unique:suppliers,mobile',
             'address' => 'nullable|string|min:3|max:100',
             'photo' => 'image|file|max:2048',
             'details' => 'nullable|min:3',
@@ -100,8 +100,8 @@ class SupplierController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3|max:50',
-            'email' => 'nullable|email|max:50|unique:suppliers',
-            'mobile' => 'nullable|min:3|digits:11',
+            'email' => 'nullable|email|max:50|unique:suppliers,email,'. $id,
+            'mobile' => 'nullable|min:3|digits:11|unique:suppliers,mobile,'. $id,
             'address' => 'nullable|string|min:3|max:100',
             'photo' => 'image|file|max:2048',
             'details' => 'nullable|min:3',

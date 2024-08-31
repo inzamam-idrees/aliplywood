@@ -11,7 +11,7 @@
         <div class="app-title">
             <div>
                 <h1><i class="fa fa-th-list"></i> Purchase List</h1>
-                <p>Table to display analytical data effectively</p>
+                <!-- <p>Table to display analytical data effectively</p> -->
             </div>
             <ul class="app-breadcrumb breadcrumb side">
                 <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -20,7 +20,7 @@
             </ul>
         </div>
         <div class="">
-            <a class="btn btn-primary" href="{{route('invoice.create')}}"><i class="fa fa-plus"> Invoice Create</i></a>
+            <a class="btn btn-primary" href="{{route('purchase.create')}}"><i class="fa fa-plus"></i> Create New Purchase</a>
         </div>
 
         <div class="row mt-2">
@@ -30,27 +30,29 @@
                         <table class="table table-hover table-bordered" id="sampleTable">
                             <thead>
                             <tr>
-                                <th>Invoice ID </th>
-                                <th>Customer Name </th>
+                                <th>Purchase No. </th>
+                                <th>Supplier Name </th>
                                 <th>Date </th>
+                                <th>Total </th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                              <tbody>
 
-                             @foreach($invoices as $invoice)
+                             @foreach($purchases as $purchase)
                                  <tr>
-                                     <td>{{1000+$invoice->id}}</td>
-                                     <td>{{$invoice->customer->name}}</td>
-                                     <td>{{$invoice->created_at->format('Y-m-d')}}</td>
+                                     <td>{{$purchase->purchase_no}}</td>
+                                     <td>{{$purchase->supplier->name}}</td>
+                                     <td>{{$purchase->date->format('Y-m-d')}}</td>
+                                     <td>{{$purchase->total}}</td>
                                      <td>
-                                         <a class="btn btn-primary" href="{{route('invoice.show', $invoice->id)}}"><i class="fa fa-bandcamp" ></i></a>
-                                         <a class="btn btn-primary" href="{{route('invoice.edit', $invoice->id)}}"><i class="fa fa-edit" ></i></a>
+                                         <!-- <a class="btn btn-primary btn-sm" href="{{route('purchase.show', $purchase->id)}}"><i class="fa fa-eye" ></i></a> -->
+                                         <a class="btn btn-info btn-sm" href="{{route('purchase.edit', $purchase->id)}}"><i class="fa fa-edit" ></i></a>
 
-                                         <button class="btn btn-danger waves-effect" type="submit" onclick="deleteTag({{ $invoice->id }})">
-                                             <i class="fa fa-trash-o"></i>
+                                         <button class="btn btn-danger btn-sm waves-effect" type="submit" onclick="deleteTag({{ $purchase->id }})">
+                                             <i class="fa fa-trash"></i>
                                          </button>
-                                         <form id="delete-form-{{ $invoice->id }}" action="{{ route('invoice.destroy',$invoice->id) }}" method="POST" style="display: none;">
+                                         <form id="delete-form-{{ $purchase->id }}" action="{{ route('purchase.destroy',$purchase->id) }}" method="POST" style="display: none;">
                                              @csrf
                                              @method('DELETE')
                                          </form>

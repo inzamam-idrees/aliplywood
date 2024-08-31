@@ -32,7 +32,8 @@ class InvoiceController extends Controller
 
     public function index()
     {
-        $invoices = Invoice::all();
+        // $invoices = Invoice::all();
+        $invoices = Order::all();
         return view('invoice.index', compact('invoices'));
     }
 
@@ -58,7 +59,13 @@ class InvoiceController extends Controller
     {
         $request->validate([
             'customer_id' => 'required',
-            'order_date' => 'required|string',
+            'order_date' => 'required|date',
+            'total' => 'required',
+            'product_id.*' => 'required|exists:products,id',
+            'qty.*' => 'required|numeric|min:1',
+            'price.*' => 'required|numeric|min:0',
+            // 'dis.*' => 'required|numeric|min:0|max:100',
+            'amount.*' => 'required|numeric|min:0',
         ]);
 
         $order = new Order();
@@ -68,10 +75,12 @@ class InvoiceController extends Controller
         $order->order_status = 1;
         $order->pay = $request->total;
         $order->total_products = $request->total_products;
-        $order->sub_total = $request->sub_total;
-        $order->discount = $request->discount;
+        // $order->sub_total = $request->sub_total;
+        // $order->discount = $request->discount;
         $order->total = $request->total;
         $order->due = 0;
+        $order->bill_no = $request->bill_no;
+        $order->employee = $request->employee;
         $order->invoice_no = IdGenerator::generate([
             'table' => 'orders',
             'field' => 'invoice_no',
@@ -84,14 +93,18 @@ class InvoiceController extends Controller
             $sale = new OrderDetails();
             $sale->quantity = $request->qty[$key];
             $sale->unitcost = $request->price[$key];
-            $sale->dis = $request->dis[$key];
+            // $sale->dis = $request->dis[$key];
             $sale->total = $request->amount[$key];
             $sale->product_id = $request->product_id[$key];
             $sale->order_id = $order->id;
             $sale->save();
+
+            $product = $sale->product;
+            $product->quantity -= $sale->quantity;
+            $product->save();
         }
 
-        return redirect('invoice/'.$order->id)->with('message','Invoice created Successfully');
+        return redirect('invoice/'.$order->id)->with('message','Invoice has been created!');
     }
 
     // public function store(Request $request)
@@ -176,20 +189,28 @@ class InvoiceController extends Controller
     {
         $request->validate([
             'customer_id' => 'required',
-            'order_date' => 'required|string',
+            'order_date' => 'required|date',
+            'total' => 'required',
+            'product_id.*' => 'required|exists:products,id',
+            'qty.*' => 'required|numeric|min:1',
+            'price.*' => 'required|numeric|min:0',
+            // 'dis.*' => 'required|numeric|min:0|max:100',
+            'amount.*' => 'required|numeric|min:0',
         ]);
 
         $order = Order::findOrFail($id);
         $order->customer_id = $request->customer_id;
-        $order->payment_type = "HandCash";
+        // $order->payment_type = "HandCash";
         $order->order_date = Carbon::parse($request->order_date)->format('Y-m-d');
-        $order->order_status = 1;
-        $order->pay = $request->total;
+        // $order->order_status = 1;
+        // $order->pay = $request->total;
         $order->total_products = $request->total_products;
-        $order->sub_total = $request->sub_total;
-        $order->discount = $request->discount;
+        // $order->sub_total = $request->sub_total;
+        // $order->discount = $request->discount;
         $order->total = $request->total;
-        $order->due = 0;
+        // $order->due = 0;
+        $order->bill_no = $request->bill_no;
+        $order->employee = $request->employee;
         $order->save();
 
         // $invoice = Invoice::findOrFail($id);
@@ -198,9 +219,14 @@ class InvoiceController extends Controller
         // $invoice->save();
 
         // Sale::where('invoice_id', $id)->delete();
+        foreach ($order->details as $detail) {
+            $product = $detail->product;
+            $product->quantity += $detail->quantity;
+            $product->save();
+        }
         OrderDetails::where('order_id', $id)->delete();
 
-        foreach ( $request->product_id as $key => $product_id){
+        foreach ( $request->product_id as $key => $product_id) {
             // $sale = new Sale();
             // $sale->qty = $request->qty[$key];
             // $sale->price = $request->price[$key];
@@ -213,15 +239,19 @@ class InvoiceController extends Controller
             $sale = new OrderDetails();
             $sale->quantity = $request->qty[$key];
             $sale->unitcost = $request->price[$key];
-            $sale->dis = $request->dis[$key];
+            // $sale->dis = $request->dis[$key];
             $sale->total = $request->amount[$key];
             $sale->product_id = $request->product_id[$key];
             $sale->order_id = $order->id;
             $sale->save();
 
+            $product = $sale->product;
+            $product->quantity -= $sale->quantity;
+            $product->save();
+
         }
 
-         return redirect('invoice/'.$order->id)->with('message','Invoice updated Successfully');
+         return redirect('invoice/'.$order->id)->with('message','Invoice has been updated!');
 
 
     }
@@ -237,10 +267,15 @@ class InvoiceController extends Controller
     {
         // Sales::where('invoice_id', $id)->delete();
         // $invoice = Invoice::findOrFail($id);
-        OrderDetails::where('order_id', $id)->delete();
         $invoice = Order::findOrFail($id);
+        foreach ($invoice->details as $detail) {
+            $product = $detail->product;
+            $product->quantity += $detail->quantity;
+            $product->save();
+        }
+        OrderDetails::where('order_id', $id)->delete();
         $invoice->delete();
-        return redirect()->back();
+        return redirect()->back()->with('message', 'Invoice has been deleted!');
 
     }
 

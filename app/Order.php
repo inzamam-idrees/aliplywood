@@ -30,10 +30,10 @@ class Order extends Model
         'updated_at'    => 'datetime'
     ];
 
-    public function invoice()
-    {
-        return $this->belongsTo('App\Invoice');
-    }
+    // public function invoice()
+    // {
+    //     return $this->belongsTo('App\Invoice');
+    // }
 
     public function customer()
     {
@@ -45,10 +45,10 @@ class Order extends Model
         return $this->hasMany(OrderDetails::class);
     }
 
-    public function product()
-    {
-        return $this->belongsTo('App\Product');
-    }
+    // public function product()
+    // {
+    //     return $this->belongsTo('App\Product');
+    // }
 
 
 }

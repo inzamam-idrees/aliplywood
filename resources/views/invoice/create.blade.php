@@ -34,18 +34,30 @@
                         @endif
                         <form  method="POST" action="{{route('invoice.store')}}">
                             @csrf
-                            <div class="form-group col-md-3">
-                                <label class="control-label">Customer Name <span class="text-danger">*</span></label>
-                                <select name="customer_id" class="form-control">
-                                    <option selected disabled>Select Customer</option>
-                                    @foreach($customers as $customer)
-                                        <option value="{{$customer->id}}" @if(old('customer_id') == $customer->id) selected="selected" @endif>{{$customer->name}} </option>
-                                    @endforeach
-                                </select>
+                            <div class="row col-md-12">
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Customer Name <span class="text-danger">*</span></label>
+                                    <select name="customer_id" class="form-control select2" style="width: 100%">
+                                        <option selected disabled>Select Customer</option>
+                                        @foreach($customers as $customer)
+                                            <option value="{{$customer->id}}" @if(old('customer_id') == $customer->id) selected="selected" @endif>{{$customer->name}} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Employee Name </label>
+                                    <input type="text" name="employee" class="form-control" value="{{ old('employee') }}">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Bill No. </label>
+                                    <input type="text" name="bill_no" class="form-control" value="{{ old('bill_no') }}">
+                                </div>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label class="control-label">Date <span class="text-danger">*</span></label>
-                                <input name="order_date" class="form-control datepicker"  value="{{ old('order_date') ?? now()->format('Y-m-d') }}" type="date" placeholder="Date">
+                            <div class="row col-md-12">
+                                <div class="form-group col-md-4">
+                                    <label class="control-label">Date <span class="text-danger">*</span></label>
+                                    <input name="order_date" class="form-control datepicker"  value="{{ old('order_date') ?? now()->format('Y-m-d') }}" type="date" placeholder="Date">
+                                </div>
                             </div>
 
 
@@ -56,7 +68,7 @@
                                 <th scope="col">Product</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Unit Price</th>
-                                <th scope="col">Discount %</th>
+                                <!-- <th scope="col">Discount %</th> -->
                                 <th scope="col">Amount</th>
                                 <th scope="col"><a class="addRow badge badge-success text-white"><i class="fa fa-plus"></i> Add Row</a></th>
                             </tr>
@@ -64,7 +76,7 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    <select name="product_id[]" class="form-control productname" >
+                                    <select name="product_id[]" class="form-control productname select2" style="width: 100%">
                                         <option value="0" selected="true" disabled="true">Select Product</option>
                                         @foreach($products as $product)
                                             <option value="{{$product->id}}">{{$product->name}}</option>
@@ -73,47 +85,39 @@
                                 </td>
                                 <td><input type="number" min="0" disabled name="qty[]" class="form-control qty" ></td>
                                 <td><input type="number" min="0" disabled name="price[]" class="form-control price" ></td>
-                                <td><input type="number" min="0" disabled name="dis[]" class="form-control dis" ></td>
+                                <!-- <td><input type="number" min="0" disabled name="dis[]" class="form-control dis" ></td> -->
                                 <td><input type="number" min="0" disabled name="amount[]" class="form-control amount" ></td>
                                 <td><a class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>
                              </tr>
                             </tbody>
                             <tfoot>
-                            <!-- <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><b>Total</b></td>
-                                <td><b class="total"></b></td>
-                                <td></td>
-                            </tr> -->
 
                             <tr>
-                                <td colspan="5" class="text-right"><b>Total Product</b></td>
+                                <td colspan="4" class="text-right"><b>Total Product</b></td>
                                 <td class="text-center">
-                                    <b class="total_products"></b>
-                                    <input type="hidden" name="total_products" class="totalProductsInput" value="">
+                                    <b class="total_products">{{ old('total_products') }}</b>
+                                    <input type="hidden" name="total_products" class="totalProductsInput" value="{{ old('total_products') }}">
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="5" class="text-right"><b>Sub Total</b></td>
+                            <!-- <tr>
+                                <td colspan="4" class="text-right"><b>Sub Total</b></td>
                                 <td class="text-center">
                                     <b class="subtotal"></b>
                                     <input type="hidden" name="sub_total" class="subtotalInput" value="">
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="5" class="text-right"><b>Discount %</b></td>
+                                <td colspan="4" class="text-right"><b>Discount %</b></td>
                                 <td class="text-center">
                                     <b class="discount"></b>
                                     <input type="hidden" name="discount" class="discountInput" value="">
                                 </td>
-                            </tr>
+                            </tr> -->
                             <tr>
-                                <td colspan="5" class="text-right"><b>Total</b></td>
+                                <td colspan="4" class="text-right"><b>Total</b></td>
                                 <td class="text-center">
-                                    <b class="total"></b>
-                                    <input type="hidden" name="total" class="totalInput" value="">
+                                    <b class="total">{{ old('total') }}</b>
+                                    <input type="hidden" name="total" class="totalInput" value="{{ old('total') }}">
                                 </td>
                             </tr>
 
@@ -143,7 +147,8 @@
 @endsection
 @push('js')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-     <script src="{{asset('/')}}js/multifield/jquery.multifield.min.js"></script>
+    <script src="{{ asset('/js/multifield/jquery.multifield.min.js') }}"></script>
+    <script src="{{ asset('/js/plugins/select2.min.js') }}"></script>
 
 
 
@@ -151,7 +156,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
 
-
+            $('.select2').select2();
 
             $('tbody').delegate('.productname', 'change', function () {
 
@@ -159,7 +164,7 @@
                 tr.find('.qty').focus();
                 tr.find('.qty').prop('disabled', false);
                 tr.find('.price').prop('disabled', false);
-                tr.find('.dis').prop('disabled', false);
+                // tr.find('.dis').prop('disabled', false);
                 tr.find('.amount').prop('disabled', false);
 
             })
@@ -187,8 +192,9 @@
                 var tr = $(this).parent().parent();
                 var qty = tr.find('.qty').val();
                 var price = tr.find('.price').val();
-                var dis = tr.find('.dis').val();
-                var amount = (qty * price)-(qty * price * dis)/100;
+                // var dis = tr.find('.dis').val();
+                // var amount = (qty * price)-(qty * price * dis)/100;
+                var amount = (qty * price);
                 tr.find('.amount').val(amount);
                 total();
             });
@@ -196,8 +202,8 @@
                 var total_products = 0;
                 var quantity = 0;
                 var unitcost = 0;
-                var subtotal = 0;
-                var discount = 0;
+                // var subtotal = 0;
+                // var discount = 0;
                 var total = 0;
                 $('.price').each(function (i,e) {
                     var price =$(this).val()-0;
@@ -208,21 +214,21 @@
                     var qty =$(this).val()-0;
                     quantity += qty;
                 })
-                $('.dis').each(function (i,e) {
-                    var dis =$(this).val()-0;
-                    discount += dis;
-                })
+                // $('.dis').each(function (i,e) {
+                //     var dis =$(this).val()-0;
+                //     discount += dis;
+                // })
                 $('.amount').each(function (i,e) {
                     var amount =$(this).val()-0;
                     total += amount;
                 })
                 $('.total_products').html(total_products);
                 $('.totalProductsInput').val(total_products);
-                subtotal = unitcost * quantity;
-                $('.subtotal').html(subtotal);
-                $('.subtotalInput').val(subtotal);
-                $('.discount').html(discount);
-                $('.discountInput').val(discount);
+                // subtotal = unitcost * quantity;
+                // $('.subtotal').html(subtotal);
+                // $('.subtotalInput').val(subtotal);
+                // $('.discount').html(discount);
+                // $('.discountInput').val(discount);
                 $('.total').html(total);
                 $('.totalInput').val(total);
             }
@@ -234,7 +240,7 @@
 
             function addRow() {
                 var addRow = '<tr>\n' +
-                    '         <td><select name="product_id[]" class="form-control productname " >\n' +
+                    '         <td><select name="product_id[]" class="form-control productname select2" style="width: 100%">\n' +
                     '         <option value="0" selected="true" disabled="true">Select Product</option>\n' +
 '                                        @foreach($products as $product)\n' +
 '                                            <option value="{{$product->id}}">{{$product->name}}</option>\n' +
@@ -242,11 +248,12 @@
                     '               </select></td>\n' +
 '                                <td><input type="number" min="0" disabled name="qty[]" class="form-control qty" ></td>\n' +
 '                                <td><input type="number" min="0" disabled name="price[]" class="form-control price" ></td>\n' +
-'                                <td><input type="number" min="0" disabled name="dis[]" class="form-control dis" ></td>\n' +
+// '                                <td><input type="number" min="0" disabled name="dis[]" class="form-control dis" ></td>\n' +
 '                                <td><input type="number" min="0" disabled name="amount[]" class="form-control amount" ></td>\n' +
 '                                <td><a   class="btn btn-danger remove"> <i class="fa fa-remove"></i></a></td>\n' +
 '                             </tr>';
                 $('tbody').append(addRow);
+                $('.select2').select2();
             };
 
 
